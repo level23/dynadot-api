@@ -1,0 +1,49 @@
+{
+  "name": "level23/dynadot-api",
+  "type": "library",
+  "description": "Implementation of the Dynadot API",
+  "keywords": [
+    "dynadot"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Teye Heimans",
+      "role": "Developer",
+      "email": "teye@level23.nl"
+    },
+    {
+      "name": "Niek Bergman",
+      "role": "Developer",
+      "email": "niek@level23.nl"
+    }
+  ],
+  "require-dev": {
+    "phpmd/phpmd": "@stable",
+    "sebastian/phpcpd": "*",
+    "squizlabs/php_codesniffer": "2.*",
+    "phpdocumentor/phpdocumentor": "2.*",
+    "phpunit/phpunit": "5.5.*",
+    "phploc/phploc": "*",
+    "pdepend/pdepend": "2.2.4",
+    "mayflower/php-codebrowser": "~1.1",
+    "nikic/php-parser": "3.0.x-dev",
+    "theseer/phpdox": "0.9.0",
+    "johnkary/phpunit-speedtrap": "^1.0",
+    "guzzlehttp/guzzle": "6.*"
+  },
+  "require": {
+    "php": ">=5.4.0",
+    "neitanod/forceutf8": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Level23\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Level23\\Tests\\": "tests/"
+    }
+  }
+}
