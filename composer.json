@@ -18,12 +18,18 @@
       "email": "niek@level23.nl"
     }
   ],
+  "config": {
+    "preferred-install": "dist",
+    "platform": {
+      "php": "5.5.9"
+    }
+  },
   "require-dev": {
     "phpmd/phpmd": "@stable",
     "sebastian/phpcpd": "*",
     "squizlabs/php_codesniffer": "2.*",
     "phpdocumentor/phpdocumentor": "2.*",
-    "phpunit/phpunit": "5.5.*",
+    "phpunit/phpunit": "^4.8|^5.5",
     "phploc/phploc": "*",
     "pdepend/pdepend": "2.2.4",
     "mayflower/php-codebrowser": "~1.1",
@@ -34,7 +40,9 @@
   },
   "require": {
     "php": ">=5.4.0",
-    "neitanod/forceutf8": "dev-master"
+    "neitanod/forceutf8": "dev-master",
+    "guzzlehttp/guzzle": ">=6.0",
+    "sabre/xml": "^1.5"
   },
   "autoload": {
     "psr-4": {

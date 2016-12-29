@@ -1,0 +1,80 @@
+<ListDomainInfoResponse>
+  <ListDomainInfoHeader>
+    <ResponseCode>0</ResponseCode>
+    <Status>success</Status>
+  </ListDomainInfoHeader>
+  <ListDomainInfoContent>
+    <DomainInfoList>
+      <DomainInfo>
+        <Domain>
+          <Name>domain-exp140.com</Name>
+          <Expiration>1361430589062</Expiration>
+          <NameServerSettings>
+            <Type>Dynadot Parking</Type>
+            <WithAds>yes</WithAds>
+          </NameServerSettings>
+          <Whois>
+            <Registrant>
+              <ContactId>0</ContactId>
+            </Registrant>
+            <Admin>
+              <ContactId>0</ContactId>
+            </Admin>
+            <Technical>
+              <ContactId>0</ContactId>
+            </Technical>
+            <Billing>
+              <ContactId>0</ContactId>
+            </Billing>
+          </Whois>
+          <Locked>yes</Locked>
+          <Disabled>no</Disabled>
+          <Hold>no</Hold>
+          <Privacy>none</Privacy>
+          <isForSale>no</isForSale>
+          <RenewOption>no renew option</RenewOption>
+          <Note></Note>
+          <Folder>
+            <FolderId>-1</FolderId>
+            <FolderName>(no folder)</FolderName>
+          </Folder>
+        </Domain>
+      </DomainInfo>
+      <DomainInfo>
+        <Domain>
+          <Name>domain-exp141.com</Name>
+          <Expiration>1361430589062</Expiration>
+          <NameServerSettings>
+            <Type>Dynadot Parking</Type>
+            <WithAds>yes</WithAds>
+          </NameServerSettings>
+          <Whois>
+            <Registrant>
+              <ContactId>0</ContactId>
+            </Registrant>
+            <Admin>
+              <ContactId>0</ContactId>
+            </Admin>
+            <Technical>
+              <ContactId>0</ContactId>
+            </Technical>
+            <Billing>
+              <ContactId>0</ContactId>
+            </Billing>
+          </Whois>
+          <Locked>yes</Locked>
+          <Disabled>no</Disabled>
+          <Hold>no</Hold>
+          <Privacy>none</Privacy>
+          <isForSale>no</isForSale>
+          <RenewOption>no renew option</RenewOption>
+          <Note></Note>
+          <Folder>
+            <FolderId>-1</FolderId>
+            <FolderName>(no folder)</FolderName>
+          </Folder>
+        </Domain>
+      </DomainInfo>
+    </DomainInfoList>
+  </ListDomainInfoContent>
+</ListDomainInfoResponse>

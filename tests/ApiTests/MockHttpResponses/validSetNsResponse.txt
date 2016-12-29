@@ -1,0 +1,1 @@
+<SetNsResponse><SetNsHeader><SuccessCode>0</SuccessCode><Status>success</Status></SetNsHeader></SetNsResponse>
