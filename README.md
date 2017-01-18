@@ -12,6 +12,14 @@ each API call.
 Only a limited set of features are currently implemented, and the exact methods and parameters
 available on this API may change in the future.
 
+## NOTE
+
+This API is still in development and should only be used at your own risk!
+
+## Contributing
+
+If you want to help us improve this implementation, just contact us. All help is welcome!
+
 ## License
 See the file LICENSE for more information.
 
