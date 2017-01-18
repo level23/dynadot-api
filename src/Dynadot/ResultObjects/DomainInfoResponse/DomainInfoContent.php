@@ -1,5 +1,5 @@
 <?php
-namespace Level23\Dynadot\ResultObjects\DomainInfoResponses;
+namespace Level23\Dynadot\ResultObjects\DomainInfoResponse;
 
 class DomainInfoContent
 {

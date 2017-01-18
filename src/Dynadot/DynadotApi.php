@@ -6,16 +6,17 @@ use GuzzleHttp\Client;
 use Level23\Dynadot\Exception\ApiHttpCallFailedException;
 use Level23\Dynadot\Exception\ApiLimitationExceededException;
 use Level23\Dynadot\Exception\DynadotApiException;
-use Level23\Dynadot\ResultObjects\DomainInfoResponses;
+use Level23\Dynadot\ResultObjects\DomainInfoResponse;
+use Level23\Dynadot\ResultObjects\DomainResponse;
 use Level23\Dynadot\ResultObjects\GetContactResponses\Contact;
 use Level23\Dynadot\ResultObjects\GetContactResponses\GetContactHeader;
-use Level23\Dynadot\ResultObjects\ListDomainInfoResponses;
-use Level23\Dynadot\ResultObjects\ListDomainInfoResponses\ListDomainInfoHeader;
+use Level23\Dynadot\ResultObjects\ListDomainInfoResponse;
 use Level23\Dynadot\ResultObjects\SetNsResponses\SetNsHeader;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Sabre\Xml\Reader;
 use Sabre\Xml\Service;
+
 
 class DynadotApi
 {
@@ -29,16 +30,19 @@ class DynadotApi
      * @var array
      */
     protected $guzzleOptions = [];
+
     /**
      * Dynadot's API key we should use for HTTP calls.
      * @var string
      */
     protected $apiKey;
+
     /**
      * Logger for writing debug info
      * @var LoggerInterface
      */
     protected $logger;
+
     /**
      * Changes boolean values like "no" and "yes" into false and true.
      * @param \Sabre\Xml\Reader $reader
@@ -47,7 +51,7 @@ class DynadotApi
      */
     protected $booleanDeserializer;
     /**
-     * Return the contact id
+ * Return the contact id
      * @param Reader $reader
      * @return int
      */
@@ -113,7 +117,7 @@ class DynadotApi
      * Get info about a domain
      *
      * @param $domain
-     * @return DomainInfoResponses\Domain
+     * @return DomainResponse\Domain
      * @throws DynadotApiException
      */
     public function getDomainInfo($domain)
@@ -141,13 +145,11 @@ class DynadotApi
                 $children = $reader->parseInnerTree();
 
                 foreach ($children as $child) {
-
                     if ($child['name'] == '{}ServerId') {
                         $id = $child['value'];
                     } elseif ($child['name'] == '{}ServerName') {
-
                         if (!empty($id) && !empty($child['value'])) {
-                            $nameserver = new DomainInfoResponses\NameServer();;
+                            $nameserver = new DomainResponse\NameServer();;
                             $nameserver->ServerId = $id;
                             $nameserver->ServerName = $child['value'];
 
@@ -175,34 +177,34 @@ class DynadotApi
         // map certain values to objects
         $sabreService->mapValueObject(
             '{}DomainInfoResponse',
-            DomainInfoResponses\DomainInfoResponse::class
+            DomainInfoResponse\DomainInfoResponse::class
         );
 
         $sabreService->mapValueObject(
             '{}DomainInfoResponseHeader',
-            DomainInfoResponses\DomainInfoResponseHeader::class
+            DomainInfoResponse\DomainInfoResponseHeader::class
         );
         $sabreService->mapValueObject(
             '{}DomainInfoContent',
-            DomainInfoResponses\DomainInfoContent::class
+            DomainInfoResponse\DomainInfoContent::class
         );
 
         $sabreService->mapValueObject(
             '{}Domain',
-            DomainInfoResponses\Domain::class
+            DomainResponse\Domain::class
         );
         $sabreService->mapValueObject(
             '{}NameServerSettings',
-            DomainInfoResponses\NameServerSettings::class
+            DomainResponse\NameServerSettings::class
         );
         $sabreService->mapValueObject(
             '{}Whois',
-            DomainInfoResponses\Whois::class
+            DomainResponse\Whois::class
         );
 
         $sabreService->mapValueObject(
             '{}Folder',
-            DomainInfoResponses\Folder::class
+            DomainResponse\Folder::class
         );
 
         $this->log(LogLevel::DEBUG, 'Start parsing response XML');
@@ -211,14 +213,15 @@ class DynadotApi
         /** @noinspection PhpVoidFunctionResultUsedInspection */
         $resultData = $sabreService->expect('DomainInfoResponse', $response);
 
-        if (!$resultData instanceof DomainInfoResponses\DomainInfoResponse) {
+        if (!$resultData instanceof DomainInfoResponse\DomainInfoResponse) {
             throw new DynadotApiException('We failed to parse the response');
         }
 
         /**
          * Check if the API call was successful. If not, return the error
          */
-        if ($resultData->DomainInfoResponseHeader->SuccessCode != DomainInfoResponses\DomainInfoResponseHeader::SUCCESSCODE_OK) {
+        $code = $resultData->DomainInfoResponseHeader->SuccessCode;
+        if ($code != DomainInfoResponse\DomainInfoResponseHeader::SUCCESSCODE_OK) {
             throw new DynadotApiException($resultData->DomainInfoResponseHeader->Error);
         }
 
@@ -352,7 +355,7 @@ class DynadotApi
     /**
      * List all domains in the account
      *
-     * @return array
+     * @return Domain[]
      */
     public function listDomains()
     {
@@ -364,10 +367,84 @@ class DynadotApi
         // perform the API call
         $response = $this->performRawApiCall($requestData);
 
-
         // start parsing XML data using Sabre
         $sabreService = new Service();
 
+
+        // set mapping
+        $sabreService->elementMap = [
+            '{}NameServers' => function (Reader $reader) {
+
+                $nameservers = [];
+                $id = '';
+
+                $children = $reader->parseInnerTree();
+
+                foreach ($children as $child) {
+                    if ($child['name'] == '{}ServerId') {
+                        $id = $child['value'];
+                    } elseif ($child['name'] == '{}ServerName') {
+                        if (!empty($id) && !empty($child['value'])) {
+                            $nameserver = new DomainResponse\NameServer();;
+                            $nameserver->ServerId = $id;
+                            $nameserver->ServerName = $child['value'];
+
+                            $nameservers[] = $nameserver;
+                        }
+                        $id = null;
+                    }
+                }
+
+                return $nameservers;
+            },
+            '{}Registrant' => $this->contactIdDeserializer,
+            '{}Admin' => $this->contactIdDeserializer,
+            '{}Technical' => $this->contactIdDeserializer,
+            '{}Billing' => $this->contactIdDeserializer,
+            '{}isForSale' => $this->booleanDeserializer,
+            '{}Hold' => $this->booleanDeserializer,
+            '{}RegistrantUnverified' => $this->booleanDeserializer,
+            '{}UdrpLocked' => $this->booleanDeserializer,
+            '{}Disabled' => $this->booleanDeserializer,
+            '{}Locked' => $this->booleanDeserializer,
+            '{}WithAds' => $this->booleanDeserializer,
+        ];
+
+        // map certain values to objects
+        $sabreService->mapValueObject(
+            '{}ListDomainInfoResponse',
+            ListDomainInfoResponse\ListDomainInfoResponse::class
+        );
+
+        $sabreService->mapValueObject(
+            '{}ListDomainInfoHeader',
+            ListDomainInfoResponse\ListDomainInfoHeader::class
+        );
+        $sabreService->mapValueObject(
+            '{}ListDomainInfoContent',
+            ListDomainInfoResponse\ListDomainInfoContent::class
+        );
+
+        $sabreService->mapValueObject(
+            '{}Domain',
+            DomainResponse\Domain::class
+        );
+        $sabreService->mapValueObject(
+            '{}NameServerSettings',
+            DomainResponse\NameServerSettings::class
+        );
+        $sabreService->mapValueObject(
+            '{}Whois',
+            DomainResponse\Whois::class
+        );
+
+        $sabreService->mapValueObject(
+            '{}Folder',
+            DomainResponse\Folder::class
+        );
+
+
+        /*
         // set mapping
         $sabreService->elementMap = [
             '{}ListDomainInfoResponse' => function (Reader $reader) {
@@ -391,36 +468,38 @@ class DynadotApi
         );
         $sabreService->mapValueObject(
             '{}Domain',
-            ListDomainInfoResponses\Domain::class
+            ListDomainInfoResponse\Domain::class
         );
         $sabreService->mapValueObject(
             '{}NameServerSettings',
-            ListDomainInfoResponses\NameServerSettings::class
+            ListDomainInfoResponse\NameServerSettings::class
         );
         $sabreService->mapValueObject(
             '{}DomainInfoResponseHeader',
-            ListDomainInfoResponses\DomainInfoResponseHeader::class
+            ListDomainInfoResponse\DomainInfoResponseHeader::class
         );
         $sabreService->mapValueObject(
             '{}Whois',
-            ListDomainInfoResponses\Whois::class
+            ListDomainInfoResponse\Whois::class
         );
         $sabreService->mapValueObject(
             '{}Registrant',
-            ListDomainInfoResponses\Registrant::class
+            ListDomainInfoResponse\Registrant::class
         );
         $sabreService->mapValueObject(
             '{}Admin',
-            ListDomainInfoResponses\Admin::class
+            ListDomainInfoResponse\Admin::class
         );
         $sabreService->mapValueObject(
             '{}Technical',
-            ListDomainInfoResponses\Technical::class
+            ListDomainInfoResponse\Technical::class
         );
         $sabreService->mapValueObject(
             '{}Billing',
-            ListDomainInfoResponses\Billing::class
+            ListDomainInfoResponse\Billing::class
         );
+
+        */
 
         // parse the data, we are expecting a ListDomainInfoResponse root node
         /** @noinspection PhpVoidFunctionResultUsedInspection */
