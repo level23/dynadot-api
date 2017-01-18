@@ -36,7 +36,7 @@ class ApiTests extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException(\Level23\Dynadot\Exception\ApiHttpCallFailedException::class);
         /** @noinspection PhpUnusedLocalVariableInspection */
-        $response = $api->performDomainInfo('example.com');
+        $response = $api->getDomainInfo('example.com');
     }
 
     /**
@@ -60,7 +60,7 @@ class ApiTests extends \PHPUnit_Framework_TestCase
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
         // in this case, we pretend example.com isn't owned by us
-        $response = $api->performDomainInfo('example.com');
+        $response = $api->getDomainInfo('example.com');
         $this->assertInstanceOf(
             \Level23\Dynadot\ResultObjects\DomainInfoResponses\DomainInfoResponseHeader::class,
             $response['{}DomainInfoResponseHeader']
@@ -88,7 +88,7 @@ class ApiTests extends \PHPUnit_Framework_TestCase
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
-        $response = $api->performDomainInfo('example.com');
+        $response = $api->getDomainInfo('example.com');
         $this->assertInstanceOf(
             \Level23\Dynadot\ResultObjects\DomainInfoResponses\DomainInfoResponseHeader::class,
             $response['{}DomainInfoResponseHeader']
@@ -149,7 +149,6 @@ class ApiTests extends \PHPUnit_Framework_TestCase
             1304,
             $whoisResponse->Billing->ContactId
         );
-
     }
 
     /**
@@ -266,7 +265,7 @@ class ApiTests extends \PHPUnit_Framework_TestCase
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
-        $response = $api->performSetNs('example.com', array('ns01.example.com', 'ns02.example.com'));
+        $response = $api->setNameserversOnDomain('example.com', array('ns01.example.com', 'ns02.example.com'));
         $this->assertInstanceOf(
             \Level23\Dynadot\ResultObjects\SetNsResponses\SetNsHeader::class,
             $response['{}SetNsHeader']
@@ -299,7 +298,7 @@ class ApiTests extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(\Level23\Dynadot\Exception\ApiLimitationExceededException::class);
 
         // try to set 14 nameservers for example.com
-        $api->performSetNs(
+        $api->setNameserversOnDomain(
             'example.com',
             array(
                 'ns01.example.com',

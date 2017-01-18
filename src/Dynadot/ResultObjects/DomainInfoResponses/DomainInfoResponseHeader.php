@@ -1,15 +1,24 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: niek
- * Date: 15-12-16
- * Time: 13:19
- */
 
 namespace Level23\Dynadot\ResultObjects\DomainInfoResponses;
 
 class DomainInfoResponseHeader
 {
+    const SUCCESSCODE_OK = 0;
+    const SUCCESSCODE_FAILURE = -1;
+
+    /**
+     * @var int
+     */
     public $SuccessCode;
+
+    /**
+     * @var string
+     */
     public $Status;
+
+    /**
+     * @var string
+     */
+    public $Error;
 }

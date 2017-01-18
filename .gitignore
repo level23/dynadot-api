@@ -21,3 +21,4 @@ composer.lock
 *.bak
 *.jar
 
+/examples/.key

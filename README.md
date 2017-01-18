@@ -6,10 +6,14 @@ Unofficial implementation for the advanced Dynadot domain API
 Please note, this is a beta API implementation, based on the API description at
 https://www.dynadot.com/domain/api3.html
 
-Due to the somewhat limited documentation of possible error responses, error handling is currently
-done best by checking if the StatusCode/ResponseCode (sadly, the naming of this isn't consistent,
-see the Dynadot API3 documentation for more info) equals zero, and adding a try/catch block around
-each API call.
+Before you can use this API you have to:
+
+  * Get the API key from the dynadot backend
+  * Whitelist the IP address where your requests are coming from
+
+
+By default, we will try to connect to the Dynadoy API for 30 seconds. If that fails, 
+an `GuzzleHttp\Exception\ConnectException` is thrown. You probably want to catch these in case if something goes wrong.
 
 Only a limited set of features are currently implemented, and the exact methods and parameters
 available on this API may change in the future.
@@ -22,7 +26,6 @@ This API is still in development and should only be used at your own risk!
 
 If you want to help us improve this implementation, just contact us. All help is welcome!
 
-
 ## License
 See the file LICENSE for more information.
 
@@ -33,6 +36,27 @@ own code, e.g.:
     use Level23\Dynadot\DynadotApi;
     use Level23\Dynadot\ResultObjects\DomainInfoResponses\Domain;
     ...more use statements here...
+
+### Getting Domain Details
+
+```php
+use Level23\Dynadot\DynadotApi;
+
+$apiKey = 'xxx YOUR API KEY xxx';
+
+try {
+    $api = new DynadotApi($apiKey);
+    print_r($api->getDomainInfo('example.com'));
+    
+    // process your domain info here
+} catch (Exception $e) {
+    // ... handle exception
+}
+```
+
+The returned Domain Object will be an instance of `Level23\Dynadot\ResultObjects\DomainInfoResponses\Domain`. 
+
+
 
 Setting nameservers:
 
@@ -118,3 +142,12 @@ Querying whois contacts:
     } catch (Exception $e) {
         /* ... handle exception here ... */
     }
+
+    
+# FAQ
+
+## I keep getting timeouts!
+
+Make sure your IP address is whitelisted in the Dynadot backend. It can take a while (up to 1 hour) before 
+the IP address is whitelisted.
+

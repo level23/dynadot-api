@@ -8,7 +8,6 @@
 
 namespace Level23\Dynadot\ResultObjects\GetContactResponses;
 
-
 class Contact
 {
     public $ContactId;

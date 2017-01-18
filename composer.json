@@ -26,6 +26,7 @@
   },
   "require-dev": {
     "phpmd/phpmd": "@stable",
+    "monolog/monolog": "^1.21",
     "sebastian/phpcpd": "*",
     "squizlabs/php_codesniffer": "2.*",
     "phpdocumentor/phpdocumentor": "2.*",
@@ -42,6 +43,7 @@
     "php": ">=5.4.0",
     "neitanod/forceutf8": "dev-master",
     "guzzlehttp/guzzle": ">=6.0",
+    "psr/log": "^1.0",
     "sabre/xml": "^1.5"
   },
   "autoload": {

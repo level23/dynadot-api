@@ -1,16 +1,22 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: niek
- * Date: 15-12-16
- * Time: 13:41
- */
 
 namespace Level23\Dynadot\ResultObjects\DomainInfoResponses;
 
 class NameServerSettings
 {
+    /**
+     * @var string
+     */
     public $Type;
-    public $NameServers;
+
+    /**
+     * @var NameServer[]
+     */
+    public $NameServers = [];
+
+    /**
+     * In case of Type "Dynadot Parking" this value gives indication if Advertisements are shown on the parking page.
+     * @var boolean
+     */
     public $WithAds;
 }

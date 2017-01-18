@@ -8,7 +8,6 @@
 
 namespace Level23\Dynadot\ResultObjects\ListDomainInfoResponses;
 
-
 class Registrant
 {
     public $ContactId;

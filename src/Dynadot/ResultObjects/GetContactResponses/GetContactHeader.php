@@ -8,7 +8,6 @@
 
 namespace Level23\Dynadot\ResultObjects\GetContactResponses;
 
-
 class GetContactHeader
 {
     public $ResponseCode;

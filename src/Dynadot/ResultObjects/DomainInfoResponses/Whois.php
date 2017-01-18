@@ -1,33 +1,26 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: niek
- * Date: 20-12-16
- * Time: 12:06
- */
 
 namespace Level23\Dynadot\ResultObjects\DomainInfoResponses;
-
 
 class Whois
 {
     /**
-     * @var \Level23\Dynadot\ResultObjects\DomainInfoResponses\Registrant
+     * @var int
      */
     public $Registrant;
 
     /**
-     * @var \Level23\Dynadot\ResultObjects\DomainInfoResponses\Admin
+     * @var int
      */
     public $Admin;
 
     /**
-     * @var \Level23\Dynadot\ResultObjects\DomainInfoResponses\Technical
+     * @var int
      */
     public $Technical;
 
     /**
-     * @var \Level23\Dynadot\ResultObjects\DomainInfoResponses\Billing
+     * @var int
      */
     public $Billing;
 }
