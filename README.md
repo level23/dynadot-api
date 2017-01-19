@@ -62,7 +62,7 @@ try {
 }
 ```
 
-The returned Domain Object will be an instance of `Level23\Dynadot\ResultObjects\DomainInfoResponses\Domain`. 
+The returned object will be an instance of `Level23\Dynadot\ResultObjects\DomainInfoResponses\Domain`. 
 
 Example response:
 ```
