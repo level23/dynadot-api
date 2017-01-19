@@ -33,6 +33,8 @@ To make use if this API you have to run PHP 5.5 or higher.
 ## Contributing
 
 If you want to help us improve this implementation, just contact us. All help is welcome!
+The only requirement for contributing is that all code is 100% covered by unit tests and that they implement the 
+PSR standards.
 
 ## License
 
