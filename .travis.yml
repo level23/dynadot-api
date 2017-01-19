@@ -14,5 +14,8 @@ php:
   - hhvm
   - nightly
 
+before_script:
+ - travis_retry composer install --no-ansi --no-dev --no-interaction --no-progress --no-scripts --optimize-autoloader
+
 script:
   - ant travis
