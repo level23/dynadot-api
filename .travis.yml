@@ -15,8 +15,7 @@ php:
   - nightly
 
 before_script:
- - travis_retry composer require johnkary/phpunit-speedtrap --update-no-dev ;
- - travis_retry composer install --no-ansi --no-dev --no-interaction --no-progress --no-scripts --optimize-autoloader
+ - travis_retry composer install --no-ansi --dev --no-interaction --no-progress --no-scripts --optimize-autoloader
 
 script:
   - ant travis

@@ -34,7 +34,7 @@
     "phploc/phploc": "*",
     "pdepend/pdepend": "2.2.4",
     "mayflower/php-codebrowser": "~1.1",
-    "theseer/phpdox": "dev-master",
+    "theseer/phpdox": "^0.8",
     "johnkary/phpunit-speedtrap": "^1.0",
     "guzzlehttp/guzzle": "6.*"
   },
