@@ -188,6 +188,8 @@ class DynadotApi
         $sabreService->mapValueObject('{}NameServerSettings', DomainResponse\NameServerSettings::class);
         $sabreService->mapValueObject('{}Whois', DomainResponse\Whois::class);
         $sabreService->mapValueObject('{}Folder', DomainResponse\Folder::class);
+        $sabreService->mapValueObject('{}Response', GeneralResponse\Response::class);
+        $sabreService->mapValueObject('{}ResponseHeader', GeneralResponse\ResponseHeader::class);
 
         $this->log(LogLevel::DEBUG, 'Start parsing response XML');
 
@@ -195,9 +197,9 @@ class DynadotApi
         $resultData = $sabreService->parse($response);
 
         // General error, like incorrect api key
-        if( $resultData instanceof GeneralResponse\Response ) {
+        if ($resultData instanceof GeneralResponse\Response) {
             $code = $resultData->ResponseHeader->ResponseCode;
-            if( $code != GeneralResponse\ResponseHeader::RESPONSECODE_OK ) {
+            if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
                 throw new DynadotApiException($resultData->ResponseHeader->Error);
             }
         }
@@ -329,14 +331,16 @@ class DynadotApi
         // map certain values to objects
         $sabreService->mapValueObject('{}SetNsResponse', SetNsResponse\SetNsResponse::class);
         $sabreService->mapValueObject('{}SetNsHeader', SetNsResponse\SetNsHeader::class);
+        $sabreService->mapValueObject('{}Response', GeneralResponse\Response::class);
+        $sabreService->mapValueObject('{}ResponseHeader', GeneralResponse\ResponseHeader::class);
 
         // parse the data
         $resultData = $sabreService->parse($response);
 
         // General error, like incorrect api key
-        if( $resultData instanceof GeneralResponse\Response ) {
+        if ($resultData instanceof GeneralResponse\Response) {
             $code = $resultData->ResponseHeader->ResponseCode;
-            if( $code != GeneralResponse\ResponseHeader::RESPONSECODE_OK ) {
+            if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
                 throw new DynadotApiException($resultData->ResponseHeader->Error);
             }
         }
@@ -441,9 +445,9 @@ class DynadotApi
         $resultData = $sabreService->parse($response);
 
         // General error, like incorrect api key
-        if( $resultData instanceof GeneralResponse\Response ) {
+        if ($resultData instanceof GeneralResponse\Response) {
             $code = $resultData->ResponseHeader->ResponseCode;
-            if( $code != GeneralResponse\ResponseHeader::RESPONSECODE_OK ) {
+            if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
                 throw new DynadotApiException($resultData->ResponseHeader->Error);
             }
         }
@@ -492,14 +496,16 @@ class DynadotApi
         $sabreService->mapValueObject('{}GetContactHeader', GetContactResponse\GetContactHeader::class);
         $sabreService->mapValueObject('{}GetContactContent', GetContactResponse\GetContactContent::class);
         $sabreService->mapValueObject('{}Contact', GetContactResponse\Contact::class);
+        $sabreService->mapValueObject('{}Response', GeneralResponse\Response::class);
+        $sabreService->mapValueObject('{}ResponseHeader', GeneralResponse\ResponseHeader::class);
 
         // parse the data
         $resultData = $sabreService->parse($response);
 
         // General error, like incorrect api key
-        if( $resultData instanceof GeneralResponse\Response ) {
+        if ($resultData instanceof GeneralResponse\Response) {
             $code = $resultData->ResponseHeader->ResponseCode;
-            if( $code != GeneralResponse\ResponseHeader::RESPONSECODE_OK ) {
+            if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
                 throw new DynadotApiException($resultData->ResponseHeader->Error);
             }
         }

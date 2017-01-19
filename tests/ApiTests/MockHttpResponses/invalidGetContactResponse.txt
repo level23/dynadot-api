@@ -1,0 +1,1 @@
+<GetContactResponse><GetContactHeader><ResponseCode>-1</ResponseCode><Status>error</Status><Error>could not find this contact</Error></GetContactHeader></GetContactResponse>

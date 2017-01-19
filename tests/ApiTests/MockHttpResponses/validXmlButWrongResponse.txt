@@ -1,0 +1,1 @@
+<FooResponse><Bar/></FooResponse>
