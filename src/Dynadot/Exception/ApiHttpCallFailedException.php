@@ -8,8 +8,6 @@
 
 namespace Level23\Dynadot\Exception;
 
-use Level23\Dynadot\Exception\DynadotApiException;
-
 /**
  * Class ApiHttpCallFailedException
  *
