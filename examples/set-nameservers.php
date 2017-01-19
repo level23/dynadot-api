@@ -15,9 +15,8 @@ $logger->addInfo('Key: ' . $apiKey);
 
 try {
     $api = new DynadotApi($apiKey, $logger);
-    $list = $api->getDomainList();
-
-    print_r( $list );
+    $api->setNameserversForDomain('exmple.com', ['ns01.example.com', 'ns2.example.net', 'ns03.example.org']);
+    echo "OK";
 } catch (Exception $e) {
     echo $e->getMessage();
     echo "<br>";

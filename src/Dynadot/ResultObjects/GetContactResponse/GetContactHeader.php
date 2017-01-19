@@ -1,8 +1,8 @@
 <?php
 
-namespace Level23\Dynadot\ResultObjects\ListDomainInfoResponse;
+namespace Level23\Dynadot\ResultObjects\GetContactResponse;
 
-class ListDomainInfoHeader
+class GetContactHeader
 {
     /**
      * @var int
@@ -18,6 +18,7 @@ class ListDomainInfoHeader
      * @var string
      */
     public $Error;
+
 
     const RESPONSECODE_OK = 0;
     const RESPONSECODE_FAILURE = -1;

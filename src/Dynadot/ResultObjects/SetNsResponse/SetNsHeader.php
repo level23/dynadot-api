@@ -1,8 +1,7 @@
 <?php
+namespace Level23\Dynadot\ResultObjects\SetNsResponse;
 
-namespace Level23\Dynadot\ResultObjects\DomainInfoResponse;
-
-class DomainInfoResponseHeader
+class SetNsHeader
 {
     /**
      * @var int

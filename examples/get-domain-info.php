@@ -16,7 +16,7 @@ $logger->addInfo('Key: ' . $apiKey);
 
 try {
     $api = new DynadotApi($apiKey, $logger);
-    print_r($api->getDomainInfo('level23.nl'));
+    print_r($api->getDomainInfo('example.com'));
 } catch (Exception $e) {
     echo $e->getMessage();
 }

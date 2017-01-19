@@ -3,6 +3,7 @@
 use Level23\Dynadot\DynadotApi;
 use Monolog\Logger;
 
+
 require '../vendor/autoload.php';
 
 $apiKey = file_get_contents('.key');
@@ -15,11 +16,7 @@ $logger->addInfo('Key: ' . $apiKey);
 
 try {
     $api = new DynadotApi($apiKey, $logger);
-    $list = $api->getDomainList();
-
-    print_r( $list );
+    print_r($api->getContactInfo(1234)); //
 } catch (Exception $e) {
     echo $e->getMessage();
-    echo "<br>";
-    echo $e->getTraceAsString();
 }

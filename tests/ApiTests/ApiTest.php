@@ -5,6 +5,11 @@ namespace Level23\Dynadot\ApiTests;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use Level23\Dynadot\DynadotApi;
+use Level23\Dynadot\Exception\ApiHttpCallFailedException;
+use Level23\Dynadot\Exception\ApiLimitationExceededException;
+use Level23\Dynadot\Exception\DynadotApiException;
+use Level23\Dynadot\ResultObjects\DomainResponse\Domain;
+use Level23\Dynadot\ResultObjects\GetContactResponse\Contact;
 
 class ApiTests extends \PHPUnit_Framework_TestCase
 {
@@ -34,7 +39,7 @@ class ApiTests extends \PHPUnit_Framework_TestCase
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
-        $this->setExpectedException(\Level23\Dynadot\Exception\ApiHttpCallFailedException::class);
+        $this->setExpectedException(ApiHttpCallFailedException::class);
         /** @noinspection PhpUnusedLocalVariableInspection */
         $response = $api->getDomainInfo('example.com');
     }
@@ -42,7 +47,7 @@ class ApiTests extends \PHPUnit_Framework_TestCase
     /**
      * Test how a domain_info response for an invalid domain that is not owned by our account is handled.
      */
-    public function testPerformDomainInfoForInvalidDomain()
+    public function testGetDomainInfoForInvalidDomain()
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -59,19 +64,16 @@ class ApiTests extends \PHPUnit_Framework_TestCase
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
+        $this->setExpectedException(DynadotApiException::class);
+
         // in this case, we pretend example.com isn't owned by us
         $response = $api->getDomainInfo('example.com');
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\DomainInfoResponses\DomainInfoResponseHeader::class,
-            $response['{}DomainInfoResponseHeader']
-        );
-        $this->assertEquals(-1, $response['{}DomainInfoResponseHeader']->SuccessCode);
     }
 
     /**
      * Test how a domain_info response for an valid domain that is owned by our account is handled.
      */
-    public function testPerformDomainInfoForValidDomain()
+    public function testGetDomainInfoForValidDomain()
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -89,66 +91,7 @@ class ApiTests extends \PHPUnit_Framework_TestCase
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
         $response = $api->getDomainInfo('example.com');
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\DomainInfoResponses\DomainInfoResponseHeader::class,
-            $response['{}DomainInfoResponseHeader']
-        );
-
-        // did we get the expected response header
-        $this->assertEquals(0, $response['{}DomainInfoResponseHeader']->SuccessCode);
-
-        // did we get a domain back?
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\DomainInfoResponses\Domain::class,
-            $response['{}DomainInfoContent']['{}Domain']
-        );
-
-        // did we get the expected domain name back in the response?
-        $this->assertEquals('example.com', $response['{}DomainInfoContent']['{}Domain']->Name);
-
-        // check if we got whois info too
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\DomainInfoResponses\Whois::class,
-            $response['{}DomainInfoContent']['{}Domain']->Whois
-        );
-
-        $whoisResponse = $response['{}DomainInfoContent']['{}Domain']->Whois;
-
-        // check instances of whois response
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\DomainInfoResponses\Registrant::class,
-            $whoisResponse->Registrant
-        );
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\DomainInfoResponses\Admin::class,
-            $whoisResponse->Admin
-        );
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\DomainInfoResponses\Technical::class,
-            $whoisResponse->Technical
-        );
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\DomainInfoResponses\Billing::class,
-            $whoisResponse->Billing
-        );
-
-        // check IDs reported
-        $this->assertEquals(
-            1301,
-            $whoisResponse->Registrant->ContactId
-        );
-        $this->assertEquals(
-            1302,
-            $whoisResponse->Admin->ContactId
-        );
-        $this->assertEquals(
-            1303,
-            $whoisResponse->Technical->ContactId
-        );
-        $this->assertEquals(
-            1304,
-            $whoisResponse->Billing->ContactId
-        );
+        $this->assertInstanceOf(Domain::class, $response);
     }
 
     /**
@@ -170,79 +113,10 @@ class ApiTests extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $response = $api->performListDomain();
+        $response = $api->getDomainList();
 
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\ListDomainInfoResponses\ListDomainInfoHeader::class,
-            $response['{}ListDomainInfoHeader']
-        );
-
-        // check if we got a valid status code
-        $this->assertEquals(0, $response['{}ListDomainInfoHeader']->StatusCode);
-
-        // check if we got two Domain objects in the DomainInfoList
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\ListDomainInfoResponses\Domain::class,
-            $response['{}ListDomainInfoContent']['{}DomainInfoList'][0]['{}Domain']
-        );
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\ListDomainInfoResponses\Domain::class,
-            $response['{}ListDomainInfoContent']['{}DomainInfoList'][1]['{}Domain']
-        );
-
-        // check if the domain names were parsed properly
-        $this->assertEquals(
-            'domain-exp140.com',
-            $response['{}ListDomainInfoContent']['{}DomainInfoList'][0]['{}Domain']->Name
-        );
-        $this->assertEquals(
-            'domain-exp141.com',
-            $response['{}ListDomainInfoContent']['{}DomainInfoList'][1]['{}Domain']->Name
-        );
-
-        // check if we got whois info too
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\ListDomainInfoResponses\Whois::class,
-            $response['{}ListDomainInfoContent']['{}DomainInfoList'][0]['{}Domain']->Whois
-        );
-
-        $whoisResponse = $response['{}ListDomainInfoContent']['{}DomainInfoList'][0]['{}Domain']->Whois;
-
-        // check instances of whois response
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\ListDomainInfoResponses\Registrant::class,
-            $whoisResponse->Registrant
-        );
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\ListDomainInfoResponses\Admin::class,
-            $whoisResponse->Admin
-        );
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\ListDomainInfoResponses\Technical::class,
-            $whoisResponse->Technical
-        );
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\ListDomainInfoResponses\Billing::class,
-            $whoisResponse->Billing
-        );
-
-        // check IDs reported
-        $this->assertEquals(
-            0,
-            $whoisResponse->Registrant->ContactId
-        );
-        $this->assertEquals(
-            0,
-            $whoisResponse->Admin->ContactId
-        );
-        $this->assertEquals(
-            0,
-            $whoisResponse->Technical->ContactId
-        );
-        $this->assertEquals(
-            0,
-            $whoisResponse->Billing->ContactId
-        );
+        $this->assertTrue(is_array($response));
+        $this->assertContainsOnlyInstancesOf(Domain::class, $response);
     }
 
     /**
@@ -265,12 +139,8 @@ class ApiTests extends \PHPUnit_Framework_TestCase
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
-        $response = $api->setNameserversOnDomain('example.com', array('ns01.example.com', 'ns02.example.com'));
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\SetNsResponses\SetNsHeader::class,
-            $response['{}SetNsHeader']
-        );
-        $this->assertEquals(0, $response['{}SetNsHeader']->StatusCode);
+        $result = $api->setNameserversForDomain('example.com', ['ns01.example.com', 'ns02.example.com']);
+        $this->assertEquals($result, null);
     }
 
     /**
@@ -278,7 +148,6 @@ class ApiTests extends \PHPUnit_Framework_TestCase
      */
     public function testSetNsApiLimitationsHandling()
     {
-
         // set up mock objects
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -295,12 +164,12 @@ class ApiTests extends \PHPUnit_Framework_TestCase
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
         // we are going to expect a ApiLimitationExceededException if we try to set 14 nameservers
-        $this->setExpectedException(\Level23\Dynadot\Exception\ApiLimitationExceededException::class);
+        $this->setExpectedException(ApiLimitationExceededException::class);
 
         // try to set 14 nameservers for example.com
-        $api->setNameserversOnDomain(
+        $api->setNameserversForDomain(
             'example.com',
-            array(
+            [
                 'ns01.example.com',
                 'ns02.example.com',
                 'ns03.example.com',
@@ -315,16 +184,16 @@ class ApiTests extends \PHPUnit_Framework_TestCase
                 'ns12.example.com',
                 'ns13.example.com',
                 'ns14.example.com',
-            )
+            ]
         );
     }
+
 
     /**
      * Test how a get_contact call is handled.
      */
     public function testPerformGetContact()
     {
-
         // set up mock objects
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -342,36 +211,25 @@ class ApiTests extends \PHPUnit_Framework_TestCase
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
         // do a request
-        $response = $api->performGetContact(12345);
+        $response = $api->getContactInfo(12345);
 
         // check if we got a header
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\GetContactResponses\GetContactHeader::class,
-            $response['{}GetContactHeader']
-        );
+        $this->assertInstanceOf(Contact::class, $response);
 
-        // check if the status code was okay
-        $this->assertEquals(0, $response['{}GetContactHeader']->StatusCode);
-
-        // test if we got a Contact object
-        $this->assertInstanceOf(
-            \Level23\Dynadot\ResultObjects\GetContactResponses\Contact::class,
-            $response['{}GetContactContent']['{}Contact']
-        );
 
         // test if the Contact was parsed properly
-        $this->assertEquals('12345', $response['{}GetContactContent']['{}Contact']->ContactId);
-        $this->assertEquals('name', $response['{}GetContactContent']['{}Contact']->Name);
-        $this->assertEquals('example@example.com', $response['{}GetContactContent']['{}Contact']->Email);
-        $this->assertEquals('0', $response['{}GetContactContent']['{}Contact']->PhoneCc);
-        $this->assertEquals('phone number', $response['{}GetContactContent']['{}Contact']->PhoneNum);
-        $this->assertEquals('example faxcc', $response['{}GetContactContent']['{}Contact']->FaxCc);
-        $this->assertEquals('example faxnum', $response['{}GetContactContent']['{}Contact']->FaxNum);
-        $this->assertEquals('address1', $response['{}GetContactContent']['{}Contact']->Address1);
-        $this->assertEquals('address2', $response['{}GetContactContent']['{}Contact']->Address2);
-        $this->assertEquals('city', $response['{}GetContactContent']['{}Contact']->City);
-        $this->assertEquals('state', $response['{}GetContactContent']['{}Contact']->State);
-        $this->assertEquals('zipcode', $response['{}GetContactContent']['{}Contact']->ZipCode);
-        $this->assertEquals('country', $response['{}GetContactContent']['{}Contact']->Country);
+        $this->assertEquals('12345', $response->ContactId);
+        $this->assertEquals('name', $response->Name);
+        $this->assertEquals('example@example.com', $response->Email);
+        $this->assertEquals('0', $response->PhoneCc);
+        $this->assertEquals('phone number', $response->PhoneNum);
+        $this->assertEquals('example faxcc', $response->FaxCc);
+        $this->assertEquals('example faxnum', $response->FaxNum);
+        $this->assertEquals('address1', $response->Address1);
+        $this->assertEquals('address2', $response->Address2);
+        $this->assertEquals('city', $response->City);
+        $this->assertEquals('state', $response->State);
+        $this->assertEquals('zipcode', $response->ZipCode);
+        $this->assertEquals('country', $response->Country);
     }
 }

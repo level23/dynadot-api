@@ -8,15 +8,13 @@ use Level23\Dynadot\Exception\ApiLimitationExceededException;
 use Level23\Dynadot\Exception\DynadotApiException;
 use Level23\Dynadot\ResultObjects\DomainInfoResponse;
 use Level23\Dynadot\ResultObjects\DomainResponse;
-use Level23\Dynadot\ResultObjects\GetContactResponses\Contact;
-use Level23\Dynadot\ResultObjects\GetContactResponses\GetContactHeader;
+use Level23\Dynadot\ResultObjects\GetContactResponse;
 use Level23\Dynadot\ResultObjects\ListDomainInfoResponse;
-use Level23\Dynadot\ResultObjects\SetNsResponses\SetNsHeader;
+use Level23\Dynadot\ResultObjects\SetNsResponse;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Sabre\Xml\Reader;
 use Sabre\Xml\Service;
-
 
 class DynadotApi
 {
@@ -51,7 +49,7 @@ class DynadotApi
      */
     protected $booleanDeserializer;
     /**
- * Return the contact id
+     * Return the contact id
      * @param Reader $reader
      * @return int
      */
@@ -61,7 +59,8 @@ class DynadotApi
      * DynadotApi constructor.
      *
      * @param string $apiKey The API key we should use while communicating with the Dynadot API.
-     * @param Logger
+     * @param LoggerInterface $logger
+     * @internal param $Logger
      */
     public function __construct($apiKey, LoggerInterface $logger = null)
     {
@@ -149,7 +148,8 @@ class DynadotApi
                         $id = $child['value'];
                     } elseif ($child['name'] == '{}ServerName') {
                         if (!empty($id) && !empty($child['value'])) {
-                            $nameserver = new DomainResponse\NameServer();;
+                            $nameserver = new DomainResponse\NameServer();
+                            ;
                             $nameserver->ServerId = $id;
                             $nameserver->ServerName = $child['value'];
 
@@ -175,37 +175,13 @@ class DynadotApi
         ];
 
         // map certain values to objects
-        $sabreService->mapValueObject(
-            '{}DomainInfoResponse',
-            DomainInfoResponse\DomainInfoResponse::class
-        );
-
-        $sabreService->mapValueObject(
-            '{}DomainInfoResponseHeader',
-            DomainInfoResponse\DomainInfoResponseHeader::class
-        );
-        $sabreService->mapValueObject(
-            '{}DomainInfoContent',
-            DomainInfoResponse\DomainInfoContent::class
-        );
-
-        $sabreService->mapValueObject(
-            '{}Domain',
-            DomainResponse\Domain::class
-        );
-        $sabreService->mapValueObject(
-            '{}NameServerSettings',
-            DomainResponse\NameServerSettings::class
-        );
-        $sabreService->mapValueObject(
-            '{}Whois',
-            DomainResponse\Whois::class
-        );
-
-        $sabreService->mapValueObject(
-            '{}Folder',
-            DomainResponse\Folder::class
-        );
+        $sabreService->mapValueObject('{}DomainInfoResponse', DomainInfoResponse\DomainInfoResponse::class);
+        $sabreService->mapValueObject('{}DomainInfoResponseHeader', DomainInfoResponse\DomainInfoResponseHeader::class);
+        $sabreService->mapValueObject('{}DomainInfoContent', DomainInfoResponse\DomainInfoContent::class);
+        $sabreService->mapValueObject('{}Domain', DomainResponse\Domain::class);
+        $sabreService->mapValueObject('{}NameServerSettings', DomainResponse\NameServerSettings::class);
+        $sabreService->mapValueObject('{}Whois', DomainResponse\Whois::class);
+        $sabreService->mapValueObject('{}Folder', DomainResponse\Folder::class);
 
         $this->log(LogLevel::DEBUG, 'Start parsing response XML');
 
@@ -301,63 +277,71 @@ class DynadotApi
     }
 
     /**
-     * Set nameservers for a domain
+     * Set nameservers for a domain (max 13). An exception will be thrown in case of an error.
      *
      * @param string $domain The domain where to set the nameservers for.
      * @param array $nameservers
-     * @return array
      * @throws ApiLimitationExceededException
+     * @throws DynadotApiException
      */
-    public function setNameserversOnDomain($domain, array $nameservers)
+    public function setNameserversForDomain($domain, array $nameservers)
     {
+        $this->log(LogLevel::DEBUG, 'Set ' . sizeof($nameservers) . ' nameservers for domain ' . $domain);
         $requestData = [
             'command' => 'set_ns',
             'domain' => $domain
         ];
 
+        if (sizeof($nameservers) > 13) {
+            // index starts at 0, so we should check if the index is greater than 12 (which is 13 nameservers)
+            throw new ApiLimitationExceededException(
+                'Can not define more than 13 nameservers through the API'
+            );
+        }
+
+        $idx = 0;
         // check if there are more than 13 nameservers defined
-        foreach ($nameservers as $idx => $nameserver) {
-            if ($idx > 12) {
-                // index starts at 0, so we should check if the index is greater than 12 (which is 13 nameservers)
-                throw new ApiLimitationExceededException(
-                    'Can not define more than 13 nameservers through the API'
-                );
-            }
-            $requestData['ns' . $idx] = $nameserver;
+        foreach ($nameservers as $nameserver) {
+            $requestData['ns' . $idx++] = $nameserver;
         }
 
         // perform the API call
         $response = $this->performRawApiCall($requestData);
 
+        $this->log(LogLevel::DEBUG, 'API call execured, parsing response...');
+
         // start parsing XML data using Sabre
         $sabreService = new Service();
 
-        // set mapping
-        $sabreService->elementMap = [
-            '{}SetNsResponse' => function (Reader $reader) {
-                return \Sabre\Xml\Deserializer\keyValue($reader);
-            },
-        ];
-
         // map certain values to objects
-        $sabreService->mapValueObject(
-            '{}SetNsHeader',
-            SetNsHeader::class
-        );
+        $sabreService->mapValueObject('{}SetNsResponse', SetNsResponse\SetNsResponse::class);
+        $sabreService->mapValueObject('{}SetNsHeader', SetNsResponse\SetNsHeader::class);
 
-        // parse the data, we are expecting a SetNsResponse root node
+        // parse the data, we are expecting a DomainInfoResponse root node
         /** @noinspection PhpVoidFunctionResultUsedInspection */
         $resultData = $sabreService->expect('SetNsResponse', $response);
 
-        return $resultData;
+        if (!$resultData instanceof SetNsResponse\SetNsResponse) {
+            throw new DynadotApiException('We failed to parse the response');
+        }
+
+        /**
+         * Check if the API call was successful. If not, return the error
+         */
+        $code = $resultData->SetNsHeader->SuccessCode;
+        if ($code != SetNsResponse\SetNsHeader::SUCCESSCODE_OK) {
+            throw new DynadotApiException($resultData->SetNsHeader->Error);
+        }
+
+        $this->log(LogLevel::DEBUG, 'Received correct response. Everything is ok!');
     }
 
     /**
-     * List all domains in the account
-     *
-     * @return Domain[]
+     * List all domains in the account. We will return an array with Domain objects
+     * @return DomainResponse\Domain[]
+     * @throws DynadotApiException
      */
-    public function listDomains()
+    public function getDomainList()
     {
         $this->log(LogLevel::DEBUG, 'Start retrieving all domains');
         $requestData = [
@@ -367,9 +351,10 @@ class DynadotApi
         // perform the API call
         $response = $this->performRawApiCall($requestData);
 
+        $this->log(LogLevel::DEBUG, 'Start parsing response XML');
+
         // start parsing XML data using Sabre
         $sabreService = new Service();
-
 
         // set mapping
         $sabreService->elementMap = [
@@ -385,7 +370,8 @@ class DynadotApi
                         $id = $child['value'];
                     } elseif ($child['name'] == '{}ServerName') {
                         if (!empty($id) && !empty($child['value'])) {
-                            $nameserver = new DomainResponse\NameServer();;
+                            $nameserver = new DomainResponse\NameServer();
+                            ;
                             $nameserver->ServerId = $id;
                             $nameserver->ServerName = $child['value'];
 
@@ -396,6 +382,16 @@ class DynadotApi
                 }
 
                 return $nameservers;
+            },
+            '{}DomainInfoList' => function (Reader $reader) {
+                $domains = [];
+
+                $tree = $reader->parseInnerTree();
+                foreach ($tree as $item) {
+                    $domains[] = $item['value'][0]['value'];
+                }
+
+                return $domains;
             },
             '{}Registrant' => $this->contactIdDeserializer,
             '{}Admin' => $this->contactIdDeserializer,
@@ -411,111 +407,44 @@ class DynadotApi
         ];
 
         // map certain values to objects
-        $sabreService->mapValueObject(
-            '{}ListDomainInfoResponse',
-            ListDomainInfoResponse\ListDomainInfoResponse::class
-        );
-
-        $sabreService->mapValueObject(
-            '{}ListDomainInfoHeader',
-            ListDomainInfoResponse\ListDomainInfoHeader::class
-        );
-        $sabreService->mapValueObject(
-            '{}ListDomainInfoContent',
-            ListDomainInfoResponse\ListDomainInfoContent::class
-        );
-
-        $sabreService->mapValueObject(
-            '{}Domain',
-            DomainResponse\Domain::class
-        );
-        $sabreService->mapValueObject(
-            '{}NameServerSettings',
-            DomainResponse\NameServerSettings::class
-        );
-        $sabreService->mapValueObject(
-            '{}Whois',
-            DomainResponse\Whois::class
-        );
-
-        $sabreService->mapValueObject(
-            '{}Folder',
-            DomainResponse\Folder::class
-        );
-
-
-        /*
-        // set mapping
-        $sabreService->elementMap = [
-            '{}ListDomainInfoResponse' => function (Reader $reader) {
-                return \Sabre\Xml\Deserializer\keyValue($reader);
-            },
-            '{}ListDomainInfoContent' => function (Reader $reader) {
-                return \Sabre\Xml\Deserializer\keyValue($reader);
-            },
-            '{}DomainInfoList' => function (Reader $reader) {
-                return \Sabre\Xml\Deserializer\repeatingElements($reader, 'DomainInfo');
-            },
-            '{}DomainInfo' => function (Reader $reader) {
-                return \Sabre\Xml\Deserializer\keyValue($reader);
-            },
-        ];
-
-        // map certain values to objects
-        $sabreService->mapValueObject(
-            '{}ListDomainInfoHeader',
-            ListDomainInfoHeader::class
-        );
-        $sabreService->mapValueObject(
-            '{}Domain',
-            ListDomainInfoResponse\Domain::class
-        );
-        $sabreService->mapValueObject(
-            '{}NameServerSettings',
-            ListDomainInfoResponse\NameServerSettings::class
-        );
-        $sabreService->mapValueObject(
-            '{}DomainInfoResponseHeader',
-            ListDomainInfoResponse\DomainInfoResponseHeader::class
-        );
-        $sabreService->mapValueObject(
-            '{}Whois',
-            ListDomainInfoResponse\Whois::class
-        );
-        $sabreService->mapValueObject(
-            '{}Registrant',
-            ListDomainInfoResponse\Registrant::class
-        );
-        $sabreService->mapValueObject(
-            '{}Admin',
-            ListDomainInfoResponse\Admin::class
-        );
-        $sabreService->mapValueObject(
-            '{}Technical',
-            ListDomainInfoResponse\Technical::class
-        );
-        $sabreService->mapValueObject(
-            '{}Billing',
-            ListDomainInfoResponse\Billing::class
-        );
-
-        */
+        $sabreService->mapValueObject('{}ListDomainInfoResponse', ListDomainInfoResponse\ListDomainInfoResponse::class);
+        $sabreService->mapValueObject('{}ListDomainInfoHeader', ListDomainInfoResponse\ListDomainInfoHeader::class);
+        $sabreService->mapValueObject('{}ListDomainInfoContent', ListDomainInfoResponse\ListDomainInfoContent::class);
+        $sabreService->mapValueObject('{}Domain', DomainResponse\Domain::class);
+        $sabreService->mapValueObject('{}NameServerSettings', DomainResponse\NameServerSettings::class);
+        $sabreService->mapValueObject('{}Whois', DomainResponse\Whois::class);
+        $sabreService->mapValueObject('{}Folder', DomainResponse\Folder::class);
 
         // parse the data, we are expecting a ListDomainInfoResponse root node
         /** @noinspection PhpVoidFunctionResultUsedInspection */
         $resultData = $sabreService->expect('ListDomainInfoResponse', $response);
 
-        return $resultData;
+        if (!$resultData instanceof ListDomainInfoResponse\ListDomainInfoResponse) {
+            throw new DynadotApiException('We failed to parse the response');
+        }
+
+        /**
+         * Check if the API call was successful. If not, return the error
+         */
+        $code = $resultData->ListDomainInfoHeader->ResponseCode;
+        if ($code != ListDomainInfoResponse\ListDomainInfoHeader::RESPONSECODE_OK) {
+            throw new DynadotApiException($resultData->ListDomainInfoHeader->Error);
+        }
+
+        return $resultData->ListDomainInfoContent->DomainInfoList;
     }
 
     /**
      * Get contact information for a specific contact ID
      *
      * @param int $contactId The contact ID we should request
-     * @return array
+     * @return GetContactResponse\Contact
+     * @throws DynadotApiException
      */
-    public function performGetContact($contactId)
+    public function getContactInfo($contactId)
     {
+        $this->log(LogLevel::DEBUG, 'Fetch contact details for id ' . $contactId);
+
         $requestData = [
             'command' => 'get_contact',
             'contact_id' => $contactId
@@ -524,33 +453,33 @@ class DynadotApi
         // perform the API call
         $response = $this->performRawApiCall($requestData);
 
+        $this->log(LogLevel::DEBUG, 'Start parsing result');
+        
         // start parsing XML data using Sabre
         $sabreService = new Service();
 
-        // set mapping
-        $sabreService->elementMap = [
-            '{}GetContactResponse' => function (Reader $reader) {
-                return \Sabre\Xml\Deserializer\keyValue($reader);
-            },
-            '{}GetContactContent' => function (Reader $reader) {
-                return \Sabre\Xml\Deserializer\keyValue($reader);
-            }
-        ];
-
         // map certain values to objects
-        $sabreService->mapValueObject(
-            '{}GetContactHeader',
-            GetContactHeader::class
-        );
-        $sabreService->mapValueObject(
-            '{}Contact',
-            Contact::class
-        );
+        $sabreService->mapValueObject('{}GetContactResponse', GetContactResponse\GetContactResponse::class);
+        $sabreService->mapValueObject('{}GetContactHeader', GetContactResponse\GetContactHeader::class);
+        $sabreService->mapValueObject('{}GetContactContent', GetContactResponse\GetContactContent::class);
+        $sabreService->mapValueObject('{}Contact', GetContactResponse\Contact::class);
 
         // parse the data, we are expecting a GetContactResponse root node
         /** @noinspection PhpVoidFunctionResultUsedInspection */
         $resultData = $sabreService->expect('GetContactResponse', $response);
 
-        return $resultData;
+        if (!$resultData instanceof GetContactResponse\GetContactResponse) {
+            throw new DynadotApiException('We failed to parse the response');
+        }
+
+        /**
+         * Check if the API call was successful. If not, return the error
+         */
+        $code = $resultData->GetContactHeader->ResponseCode;
+        if ($code != GetContactResponse\GetContactHeader::RESPONSECODE_OK) {
+            throw new DynadotApiException($resultData->GetContactHeader->Error);
+        }
+
+        return $resultData->GetContactContent->Contact;
     }
 }
