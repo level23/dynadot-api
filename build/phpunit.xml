@@ -3,7 +3,6 @@
          colors="true"
          backupGlobals="false"
          backupStaticAttributes="false"
-         strict="true"
          verbose="true">
     <testsuites>
         <testsuite name="Dynadot Tests">

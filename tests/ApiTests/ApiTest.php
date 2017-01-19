@@ -97,7 +97,7 @@ class ApiTests extends \PHPUnit_Framework_TestCase
     /**
      * Test how a list_domain call is handled.
      */
-    public function testPerformListDomain()
+    public function testListDomains()
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -120,9 +120,78 @@ class ApiTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test how a list_domain call is handled.
+     */
+    public function testListDomainInvalidKey()
+    {
+        $api = new DynadotApi('_API_KEY_GOES_HERE_');
+
+        $mockHandler = new MockHandler([
+            new Response(
+                200,
+                [],
+                file_get_contents(
+                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                    'MockHttpResponses/invalidApiKeyResponse.txt'
+                )
+            ),
+        ]);
+
+        $api->setGuzzleOptions(['handler' => $mockHandler]);
+        $this->setExpectedException(DynadotApiException::class);
+        $api->getDomainList();
+    }
+
+    /**
+     * Test how a list_domain call is handled.
+     */
+    public function testGetContactInvalidKey()
+    {
+        $api = new DynadotApi('_API_KEY_GOES_HERE_');
+
+        $mockHandler = new MockHandler([
+            new Response(
+                200,
+                [],
+                file_get_contents(
+                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                    'MockHttpResponses/invalidApiKeyResponse.txt'
+                )
+            ),
+        ]);
+
+        $api->setGuzzleOptions(['handler' => $mockHandler]);
+        $this->setExpectedException(DynadotApiException::class);
+        $api->getContactInfo(1234);
+    }
+
+    /**
+     * Test how a list_domain call is handled.
+     */
+    public function testGetDomainInfoInvalidKey()
+    {
+        $api = new DynadotApi('_API_KEY_GOES_HERE_');
+
+        $mockHandler = new MockHandler([
+            new Response(
+                200,
+                [],
+                file_get_contents(
+                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                    'MockHttpResponses/invalidApiKeyResponse.txt'
+                )
+            ),
+        ]);
+
+        $api->setGuzzleOptions(['handler' => $mockHandler]);
+        $this->setExpectedException(DynadotApiException::class);
+        $api->getDomainInfo('example.com');
+    }
+
+    /**
      * Test setting nameservers for a domain.
      */
-    public function testPerformSetNs()
+    public function testSetNameservers()
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -141,6 +210,30 @@ class ApiTests extends \PHPUnit_Framework_TestCase
 
         $result = $api->setNameserversForDomain('example.com', ['ns01.example.com', 'ns02.example.com']);
         $this->assertEquals($result, null);
+    }
+
+    /**
+     * Test setting nameservers for a domain.
+     */
+    public function testSetNameserversInvalidResponse()
+    {
+        $api = new DynadotApi('_API_KEY_GOES_HERE_');
+
+        $mockHandler = new MockHandler([
+            new Response(
+                200,
+                [],
+                file_get_contents(
+                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                    'MockHttpResponses/invalidSetNsResponse.txt'
+                )
+            ),
+        ]);
+
+        $api->setGuzzleOptions(['handler' => $mockHandler]);
+
+        $this->setExpectedException(DynadotApiException::class);
+        $api->setNameserversForDomain('example.com', ['ns01.example.com', 'ns02.example.com']);
     }
 
     /**
@@ -188,11 +281,34 @@ class ApiTests extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Test how a list_domain call is handled.
+     */
+    public function testSetNameserversInvalidKey()
+    {
+        $api = new DynadotApi('_API_KEY_GOES_HERE_');
+
+        $mockHandler = new MockHandler([
+            new Response(
+                200,
+                [],
+                file_get_contents(
+                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
+                    'MockHttpResponses/invalidApiKeyResponse.txt'
+                )
+            ),
+        ]);
+
+        $api->setGuzzleOptions(['handler' => $mockHandler]);
+        $this->setExpectedException(DynadotApiException::class);
+        $api->setNameserversForDomain('example.com', ['ns1.example.com']);
+    }
+
 
     /**
      * Test how a get_contact call is handled.
      */
-    public function testPerformGetContact()
+    public function testGetContact()
     {
         // set up mock objects
         $api = new DynadotApi('_API_KEY_GOES_HERE_');

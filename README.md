@@ -18,6 +18,18 @@ an `GuzzleHttp\Exception\ConnectException` is thrown. You probably want to catch
 Only a limited set of features are currently implemented, and the exact methods and parameters
 available on this API may change in the future.
 
+## Installing
+
+Install the latest version with:
+
+```bash
+$ composer require level23/dynadot-api
+```
+
+## Requirements
+
+To make use if this API you have to run PHP 5.5 or higher.
+
 ## Contributing
 
 If you want to help us improve this implementation, just contact us. All help is welcome!

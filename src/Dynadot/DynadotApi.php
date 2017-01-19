@@ -8,6 +8,7 @@ use Level23\Dynadot\Exception\ApiLimitationExceededException;
 use Level23\Dynadot\Exception\DynadotApiException;
 use Level23\Dynadot\ResultObjects\DomainInfoResponse;
 use Level23\Dynadot\ResultObjects\DomainResponse;
+use Level23\Dynadot\ResultObjects\GeneralResponse;
 use Level23\Dynadot\ResultObjects\GetContactResponse;
 use Level23\Dynadot\ResultObjects\ListDomainInfoResponse;
 use Level23\Dynadot\ResultObjects\SetNsResponse;
@@ -16,6 +17,11 @@ use Psr\Log\LogLevel;
 use Sabre\Xml\Reader;
 use Sabre\Xml\Service;
 
+/**
+ * Class DynadotApi
+ * @package Level23\Dynadot
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class DynadotApi
 {
     const DYNADOT_API_URL = 'https://api.dynadot.com/api3.xml';
@@ -185,9 +191,16 @@ class DynadotApi
 
         $this->log(LogLevel::DEBUG, 'Start parsing response XML');
 
-        // parse the data, we are expecting a DomainInfoResponse root node
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
-        $resultData = $sabreService->expect('DomainInfoResponse', $response);
+        // parse the data
+        $resultData = $sabreService->parse($response);
+
+        // General error, like incorrect api key
+        if( $resultData instanceof GeneralResponse\Response ) {
+            $code = $resultData->ResponseHeader->ResponseCode;
+            if( $code != GeneralResponse\ResponseHeader::RESPONSECODE_OK ) {
+                throw new DynadotApiException($resultData->ResponseHeader->Error);
+            }
+        }
 
         if (!$resultData instanceof DomainInfoResponse\DomainInfoResponse) {
             throw new DynadotApiException('We failed to parse the response');
@@ -317,9 +330,16 @@ class DynadotApi
         $sabreService->mapValueObject('{}SetNsResponse', SetNsResponse\SetNsResponse::class);
         $sabreService->mapValueObject('{}SetNsHeader', SetNsResponse\SetNsHeader::class);
 
-        // parse the data, we are expecting a DomainInfoResponse root node
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
-        $resultData = $sabreService->expect('SetNsResponse', $response);
+        // parse the data
+        $resultData = $sabreService->parse($response);
+
+        // General error, like incorrect api key
+        if( $resultData instanceof GeneralResponse\Response ) {
+            $code = $resultData->ResponseHeader->ResponseCode;
+            if( $code != GeneralResponse\ResponseHeader::RESPONSECODE_OK ) {
+                throw new DynadotApiException($resultData->ResponseHeader->Error);
+            }
+        }
 
         if (!$resultData instanceof SetNsResponse\SetNsResponse) {
             throw new DynadotApiException('We failed to parse the response');
@@ -414,10 +434,19 @@ class DynadotApi
         $sabreService->mapValueObject('{}NameServerSettings', DomainResponse\NameServerSettings::class);
         $sabreService->mapValueObject('{}Whois', DomainResponse\Whois::class);
         $sabreService->mapValueObject('{}Folder', DomainResponse\Folder::class);
+        $sabreService->mapValueObject('{}Response', GeneralResponse\Response::class);
+        $sabreService->mapValueObject('{}ResponseHeader', GeneralResponse\ResponseHeader::class);
 
-        // parse the data, we are expecting a ListDomainInfoResponse root node
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
-        $resultData = $sabreService->expect('ListDomainInfoResponse', $response);
+        // parse the data
+        $resultData = $sabreService->parse($response);
+
+        // General error, like incorrect api key
+        if( $resultData instanceof GeneralResponse\Response ) {
+            $code = $resultData->ResponseHeader->ResponseCode;
+            if( $code != GeneralResponse\ResponseHeader::RESPONSECODE_OK ) {
+                throw new DynadotApiException($resultData->ResponseHeader->Error);
+            }
+        }
 
         if (!$resultData instanceof ListDomainInfoResponse\ListDomainInfoResponse) {
             throw new DynadotApiException('We failed to parse the response');
@@ -464,9 +493,16 @@ class DynadotApi
         $sabreService->mapValueObject('{}GetContactContent', GetContactResponse\GetContactContent::class);
         $sabreService->mapValueObject('{}Contact', GetContactResponse\Contact::class);
 
-        // parse the data, we are expecting a GetContactResponse root node
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
-        $resultData = $sabreService->expect('GetContactResponse', $response);
+        // parse the data
+        $resultData = $sabreService->parse($response);
+
+        // General error, like incorrect api key
+        if( $resultData instanceof GeneralResponse\Response ) {
+            $code = $resultData->ResponseHeader->ResponseCode;
+            if( $code != GeneralResponse\ResponseHeader::RESPONSECODE_OK ) {
+                throw new DynadotApiException($resultData->ResponseHeader->Error);
+            }
+        }
 
         if (!$resultData instanceof GetContactResponse\GetContactResponse) {
             throw new DynadotApiException('We failed to parse the response');
