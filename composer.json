@@ -34,14 +34,12 @@
     "phploc/phploc": "*",
     "pdepend/pdepend": "2.2.4",
     "mayflower/php-codebrowser": "~1.1",
-    "nikic/php-parser": "3.0.x-dev",
-    "theseer/phpdox": "0.9.0",
+    "theseer/phpdox": "dev-master",
     "johnkary/phpunit-speedtrap": "^1.0",
     "guzzlehttp/guzzle": "6.*"
   },
   "require": {
     "php": ">=5.4.0",
-    "neitanod/forceutf8": "dev-master",
     "guzzlehttp/guzzle": ">=6.0",
     "psr/log": "^1.0",
     "sabre/xml": "^1.5"
