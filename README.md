@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/level23/dynadot-api.svg?branch=master)](https://travis-ci.org/level23/dynadot-api)
 
-# dynadot-api
+# Dynadot-API
 Unofficial implementation for the advanced Dynadot domain API
 
 Please note, this is a beta API implementation, based on the API description at
@@ -18,24 +18,17 @@ an `GuzzleHttp\Exception\ConnectException` is thrown. You probably want to catch
 Only a limited set of features are currently implemented, and the exact methods and parameters
 available on this API may change in the future.
 
-## NOTE
-
-This API is still in development and should only be used at your own risk!
-
 ## Contributing
 
 If you want to help us improve this implementation, just contact us. All help is welcome!
 
 ## License
+
 See the file LICENSE for more information.
 
 ## Example usage
-Note, in the below examples no use statements are used, but you'll likely want to use these in your
-own code, e.g.:
 
-    use Level23\Dynadot\DynadotApi;
-    use Level23\Dynadot\ResultObjects\DomainInfoResponses\Domain;
-    ...more use statements here...
+See below some basic sample usages.
 
 ### Getting Domain Details with `getDomainInfo`
 
