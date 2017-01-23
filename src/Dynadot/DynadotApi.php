@@ -155,7 +155,7 @@ class DynadotApi
                     } elseif ($child['name'] == '{}ServerName') {
                         if (!empty($id) && !empty($child['value'])) {
                             $nameserver = new DomainResponse\NameServer();
-                            ;
+
                             $nameserver->ServerId = $id;
                             $nameserver->ServerName = $child['value'];
 
@@ -177,7 +177,7 @@ class DynadotApi
             '{}UdrpLocked' => $this->booleanDeserializer,
             '{}Disabled' => $this->booleanDeserializer,
             '{}Locked' => $this->booleanDeserializer,
-            '{}WithAds' => $this->booleanDeserializer,
+            '{}WithAds' => $this->booleanDeserializer
         ];
 
         // map certain values to objects
@@ -215,6 +215,8 @@ class DynadotApi
         if ($code != DomainInfoResponse\DomainInfoResponseHeader::SUCCESSCODE_OK) {
             throw new DynadotApiException($resultData->DomainInfoResponseHeader->Error);
         }
+
+        $this->log(LogLevel::DEBUG, 'Returning domain info');
 
         // Here we know our API call was succesful, return the domain info.
         return $resultData->DomainInfoContent->Domain;
