@@ -230,3 +230,8 @@ Level23\Dynadot\ResultObjects\GetContactResponse\Contact Object
 Make sure your IP address is whitelisted in the Dynadot backend. It can take a while (up to 1 hour) before 
 the IP address is whitelisted.
 
+## I am banned from the Dynadot API!
+
+The Dynadot API only allows 1 API call at the same time. Its not allowed to do concurrent API calls. 
+If you do request multiple API calls at the same time you can be banned. The ban will be for 10 a 15 minutes.<br />
+_Information received via dynadot chat_
