@@ -5,7 +5,7 @@ namespace Level23\Dynadot\Tests\ApiTests;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
 
-class TestCase extends \PHPUnit\Framework\TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * Return a mocked response.
