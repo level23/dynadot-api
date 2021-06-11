@@ -53,16 +53,7 @@ class GeneralApiTest extends TestCase
 
         $api = new DynadotApi('_API_KEY_GOES_HERE_', $logger);
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/validDomainInfoResponseBody.txt'
-                )
-            )
-        ]);
+        $mockHandler = $this->getMockedResponse('validDomainInfoResponseBody.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 

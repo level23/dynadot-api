@@ -18,16 +18,7 @@ class GetDomainListTest extends TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/validListDomainResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('validListDomainResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
         $response = $api->getDomainList();
@@ -43,16 +34,8 @@ class GetDomainListTest extends TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/invalidListDomainResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('invalidListDomainResponse.txt');
+
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
         $this->expectException(DynadotApiException::class);
@@ -66,16 +49,7 @@ class GetDomainListTest extends TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/invalidApiKeyResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('invalidApiKeyResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
         $this->expectException(DynadotApiException::class);
@@ -89,16 +63,7 @@ class GetDomainListTest extends TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/invalidXmlResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('invalidXmlResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
         $this->expectException(LibXMLException::class);
@@ -112,16 +77,7 @@ class GetDomainListTest extends TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/validXmlButWrongResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('validXmlButWrongResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
         $this->expectException(DynadotApiException::class);

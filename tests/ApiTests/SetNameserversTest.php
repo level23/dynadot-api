@@ -11,7 +11,6 @@ use Level23\Dynadot\Exception\ApiLimitationExceededException;
 
 class SetNameserversTest extends TestCase
 {
-
     /**
      * Test setting nameservers for a domain.
      */
@@ -19,20 +18,14 @@ class SetNameserversTest extends TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/validSetNsResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('validSetNsResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
         $api->setNameserversForDomain('example.com', ['ns01.example.com', 'ns02.example.com']);
+
+        // If something nasty happend, we should not reach this.
+        $this->assertTrue(true);
     }
 
     /**
@@ -42,16 +35,7 @@ class SetNameserversTest extends TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/invalidSetNsResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('invalidSetNsResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
@@ -74,7 +58,7 @@ class SetNameserversTest extends TestCase
         $mockHandler = new MockHandler([
             new Response(
                 404
-            )
+            ),
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
@@ -111,16 +95,7 @@ class SetNameserversTest extends TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/invalidApiKeyResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('invalidApiKeyResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
         $this->expectException(DynadotApiException::class);
@@ -134,16 +109,7 @@ class SetNameserversTest extends TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/invalidXmlResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('invalidXmlResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
         $this->expectException(LibXMLException::class);
@@ -157,16 +123,7 @@ class SetNameserversTest extends TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/validXmlButWrongResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('validXmlButWrongResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
         $this->expectException(DynadotApiException::class);

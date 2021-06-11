@@ -47,17 +47,16 @@ class DynadotApi
     /**
      * Logger for writing debug info
      *
-     * @var LoggerInterface
+     * @var LoggerInterface|null
      */
     protected $logger;
 
     /**
      * Changes boolean values like "no" and "yes" into false and true.
      *
-     * @param \Sabre\Xml\Reader $reader
-     *
      * @return bool
      * @throws DynadotApiException
+     * @var \Closure
      */
     protected $booleanDeserializer;
 
@@ -67,6 +66,7 @@ class DynadotApi
      * @param Reader $reader
      *
      * @return int
+     * @var \Closure
      */
     protected $contactIdDeserializer;
 
@@ -107,10 +107,10 @@ class DynadotApi
             $value = $reader->parseInnerTree();
 
             if ($value != 'yes' && $value != 'no') {
-                throw new DynadotApiException('Error, received incorrect boolean value ' . $value);
+                throw new DynadotApiException('Error, received incorrect boolean value ' . var_export($value, true));
             }
 
-            return !($value == 'no');
+            return ($value !== 'no');
         };
 
         /**
@@ -123,7 +123,7 @@ class DynadotApi
          * @throws \Sabre\Xml\ParseException
          */
         $this->contactIdDeserializer = function (Reader $reader) {
-            $children = $reader->parseInnerTree();
+            $children = (array)$reader->parseInnerTree();
 
             return $children[0]['value'];
         };
@@ -170,7 +170,7 @@ class DynadotApi
                 $nameservers = [];
                 $id          = '';
 
-                $children = $reader->parseInnerTree();
+                $children = (array)$reader->parseInnerTree();
 
                 foreach ($children as $child) {
                     if ($child['name'] == '{}ServerId') {
@@ -248,10 +248,10 @@ class DynadotApi
     /**
      * Log a message to our logger, if we have any.
      *
-     * @param $level
-     * @param $message
+     * @param string $level
+     * @param string $message
      */
-    protected function log($level, $message)
+    protected function log(string $level, string $message): void
     {
         if ($this->logger instanceof LoggerInterface) {
             $this->logger->log($level, $message);
@@ -423,14 +423,14 @@ class DynadotApi
                 $nameservers = [];
                 $id          = '';
 
-                $children = $reader->parseInnerTree();
+                $children = (array)$reader->parseInnerTree();
 
                 foreach ($children as $child) {
                     if ($child['name'] == '{}ServerId') {
                         $id = $child['value'];
                     } elseif ($child['name'] == '{}ServerName') {
                         if (!empty($id) && !empty($child['value'])) {
-                            $nameserver = new DomainResponse\NameServer();
+                            $nameserver             = new DomainResponse\NameServer();
                             $nameserver->ServerId   = $id;
                             $nameserver->ServerName = $child['value'];
 
@@ -445,7 +445,7 @@ class DynadotApi
             '{}DomainInfoList'       => function (Reader $reader) {
                 $domains = [];
 
-                $tree = $reader->parseInnerTree();
+                $tree = (array)$reader->parseInnerTree();
                 foreach ($tree as $item) {
                     $domains[] = $item['value'][0]['value'];
                 }

@@ -22,15 +22,9 @@
     }
   },
   "require-dev": {
-    "phpmd/phpmd": "@stable",
-    "monolog/monolog": "^1.21",
-    "sebastian/phpcpd": "*",
-    "squizlabs/php_codesniffer": "2.*",
     "phpunit/phpunit": "^9",
-    "phploc/phploc": "*",
-    "pdepend/pdepend": "2.2.4",
-    "theseer/phpdox": "0.9.0",
-    "nikic/php-parser": "3.0.0beta1"
+    "monolog/monolog": "^1.21",
+    "phpstan/phpstan": "^0.12.89"
   },
   "require": {
     "php": ">=7.3",
