@@ -28,7 +28,7 @@ $ composer require level23/dynadot-api
 
 ## Requirements
 
-To make use if this API you have to run PHP 5.5 or higher.
+To make use if this API you have to run PHP 7.3 or higher.
 
 ## Contributing
 

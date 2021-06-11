@@ -1,15 +1,15 @@
 <?php
 
-namespace Level23\Dynadot\ApiTests;
+namespace Level23\Dynadot\Tests\ApiTests;
 
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use Sabre\Xml\LibXMLException;
 use Level23\Dynadot\DynadotApi;
+use GuzzleHttp\Handler\MockHandler;
 use Level23\Dynadot\Exception\DynadotApiException;
 use Level23\Dynadot\ResultObjects\DomainResponse\Domain;
-use Sabre\Xml\LibXMLException;
 
-class GetDomainListTest extends \PHPUnit_Framework_TestCase
+class GetDomainListTest extends TestCase
 {
     /**
      * Test how a list_domain call is handled.
@@ -55,7 +55,7 @@ class GetDomainListTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->getDomainList();
     }
 
@@ -78,7 +78,7 @@ class GetDomainListTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->getDomainList();
     }
 
@@ -101,7 +101,7 @@ class GetDomainListTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(LibXMLException::class);
+        $this->expectException(LibXMLException::class);
         $api->getDomainList();
     }
 
@@ -124,7 +124,7 @@ class GetDomainListTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->getDomainList();
     }
 }

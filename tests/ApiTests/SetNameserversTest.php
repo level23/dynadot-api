@@ -1,15 +1,15 @@
 <?php
 
-namespace Level23\Dynadot\ApiTests;
+namespace Level23\Dynadot\Tests\ApiTests;
 
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
-use Level23\Dynadot\DynadotApi;
-use Level23\Dynadot\Exception\ApiLimitationExceededException;
-use Level23\Dynadot\Exception\DynadotApiException;
 use Sabre\Xml\LibXMLException;
+use Level23\Dynadot\DynadotApi;
+use GuzzleHttp\Handler\MockHandler;
+use Level23\Dynadot\Exception\DynadotApiException;
+use Level23\Dynadot\Exception\ApiLimitationExceededException;
 
-class SetNameserversTest extends \PHPUnit_Framework_TestCase
+class SetNameserversTest extends TestCase
 {
 
     /**
@@ -32,8 +32,7 @@ class SetNameserversTest extends \PHPUnit_Framework_TestCase
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
-        $result = $api->setNameserversForDomain('example.com', ['ns01.example.com', 'ns02.example.com']);
-        $this->assertEquals($result, null);
+        $api->setNameserversForDomain('example.com', ['ns01.example.com', 'ns02.example.com']);
     }
 
     /**
@@ -56,7 +55,7 @@ class SetNameserversTest extends \PHPUnit_Framework_TestCase
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->setNameserversForDomain('example.com', ['ns01.example.com', 'ns02.example.com']);
     }
 
@@ -81,7 +80,7 @@ class SetNameserversTest extends \PHPUnit_Framework_TestCase
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
         // we are going to expect a ApiLimitationExceededException if we try to set 14 nameservers
-        $this->setExpectedException(ApiLimitationExceededException::class);
+        $this->expectException(ApiLimitationExceededException::class);
 
         // try to set 14 nameservers for example.com
         $api->setNameserversForDomain(
@@ -124,7 +123,7 @@ class SetNameserversTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->setNameserversForDomain('example.com', ['ns1.example.com']);
     }
 
@@ -147,7 +146,7 @@ class SetNameserversTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(LibXMLException::class);
+        $this->expectException(LibXMLException::class);
         $api->setNameserversForDomain('example.com', ['ns1.example.com']);
     }
 
@@ -170,7 +169,7 @@ class SetNameserversTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->setNameserversForDomain('example.com', ['ns1.example.com']);
     }
 }

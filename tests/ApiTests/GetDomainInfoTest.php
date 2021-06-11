@@ -1,15 +1,15 @@
 <?php
 
-namespace Level23\Dynadot\ApiTests;
+namespace Level23\Dynadot\Tests\ApiTests;
 
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use Sabre\Xml\LibXMLException;
 use Level23\Dynadot\DynadotApi;
+use GuzzleHttp\Handler\MockHandler;
 use Level23\Dynadot\Exception\DynadotApiException;
 use Level23\Dynadot\ResultObjects\DomainResponse\Domain;
-use Sabre\Xml\LibXMLException;
 
-class GetDomainInfoTest extends \PHPUnit_Framework_TestCase
+class GetDomainInfoTest extends TestCase
 {
     /**
      * Test how a domain_info response for an invalid domain that is not owned by our account is handled.
@@ -31,7 +31,7 @@ class GetDomainInfoTest extends \PHPUnit_Framework_TestCase
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
 
         // in this case, we pretend example.com isn't owned by us
         $api->getDomainInfo('example.com');
@@ -80,7 +80,7 @@ class GetDomainInfoTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->getDomainInfo('example.com');
     }
 
@@ -103,7 +103,7 @@ class GetDomainInfoTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(LibXMLException::class);
+        $this->expectException(LibXMLException::class);
         $api->getDomainInfo('example.com');
     }
 
@@ -126,7 +126,7 @@ class GetDomainInfoTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->getDomainInfo('example.com');
     }
 }
