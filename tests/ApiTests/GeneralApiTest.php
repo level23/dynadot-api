@@ -1,15 +1,14 @@
 <?php
 
-namespace Level23\Dynadot\ApiTests;
+namespace Level23\Dynadot\Tests\ApiTests;
 
-use GuzzleHttp\Handler\MockHandler;
+use Monolog\Logger;
 use GuzzleHttp\Psr7\Response;
 use Level23\Dynadot\DynadotApi;
+use GuzzleHttp\Handler\MockHandler;
 use Level23\Dynadot\Exception\ApiHttpCallFailedException;
-use Monolog\Handler\NullHandler;
-use Monolog\Logger;
 
-class GeneralApiTests extends \PHPUnit_Framework_TestCase
+class GeneralApiTest extends TestCase
 {
     /**
      * Test if fetching the API key after instantiating the API works.
@@ -36,7 +35,7 @@ class GeneralApiTests extends \PHPUnit_Framework_TestCase
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
-        $this->setExpectedException(ApiHttpCallFailedException::class);
+        $this->expectException(ApiHttpCallFailedException::class);
         /** @noinspection PhpUnusedLocalVariableInspection */
         $response = $api->getDomainInfo('example.com');
     }
@@ -44,21 +43,17 @@ class GeneralApiTests extends \PHPUnit_Framework_TestCase
     public function testLogger()
     {
         // Create the logger
-        $logger = new Logger('my_logger');
+        $logger = $this->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['log'])
+            ->getMock();
 
-        $logger->pushHandler(new NullHandler());
+        $logger->expects($this->atLeastOnce())
+            ->method('log');
+
         $api = new DynadotApi('_API_KEY_GOES_HERE_', $logger);
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/validDomainInfoResponseBody.txt'
-                )
-            )
-        ]);
+        $mockHandler = $this->getMockedResponse('validDomainInfoResponseBody.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 

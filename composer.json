@@ -11,11 +11,6 @@
       "name": "Teye Heimans",
       "role": "Developer",
       "email": "teye@level23.nl"
-    },
-    {
-      "name": "Niek Bergman",
-      "role": "Developer",
-      "email": "niek@level23.nl"
     }
   ],
   "minimum-stability": "dev",
@@ -23,29 +18,19 @@
   "config": {
     "preferred-install": "dist",
     "platform": {
-      "php": "5.5.9"
+      "php": "7.3"
     }
   },
   "require-dev": {
-    "phpmd/phpmd": "@stable",
+    "phpunit/phpunit": "^9",
     "monolog/monolog": "^1.21",
-    "sebastian/phpcpd": "*",
-    "squizlabs/php_codesniffer": "2.*",
-    "phpdocumentor/phpdocumentor": "2.*",
-    "phpunit/phpunit": "^4.8|^5.5",
-    "phploc/phploc": "*",
-    "pdepend/pdepend": "2.2.4",
-    "mayflower/php-codebrowser": "~1.1",
-    "theseer/phpdox": "0.9.0",
-    "johnkary/phpunit-speedtrap": "^1.0",
-    "guzzlehttp/guzzle": "6.*",
-    "nikic/php-parser": "3.0.0beta1"
+    "phpstan/phpstan": "^0.12.89"
   },
   "require": {
-    "php": ">=5.5.0",
+    "php": ">=7.3",
     "guzzlehttp/guzzle": ">=6.0",
     "psr/log": "^1.0",
-    "sabre/xml": "^1.5"
+    "sabre/xml": "^2"
   },
   "autoload": {
     "psr-4": {
@@ -54,7 +39,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Level23\\Tests\\": "tests/"
+      "Level23\\Dynadot\\Tests\\": "tests/"
     }
   }
 }

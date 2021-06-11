@@ -1,16 +1,15 @@
 <?php
 
-namespace Level23\Dynadot\ApiTests;
+namespace Level23\Dynadot\Tests\ApiTests;
 
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
-use Level23\Dynadot\DynadotApi;
-use Level23\Dynadot\Exception\DynadotApiException;
-use Level23\Dynadot\ResultObjects\DomainResponse\Domain;
-use Level23\Dynadot\ResultObjects\GetContactResponse\Contact;
 use Sabre\Xml\LibXMLException;
+use Level23\Dynadot\DynadotApi;
+use GuzzleHttp\Handler\MockHandler;
+use Level23\Dynadot\Exception\DynadotApiException;
+use Level23\Dynadot\ResultObjects\GetContactResponse\Contact;
 
-class GetContactInfoTest extends \PHPUnit_Framework_TestCase
+class GetContactInfoTest extends TestCase
 {
     /**
      * Test how a get_contact call is handled.
@@ -20,16 +19,7 @@ class GetContactInfoTest extends \PHPUnit_Framework_TestCase
         // set up mock objects
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/validGetContactResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('validGetContactResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
@@ -65,21 +55,11 @@ class GetContactInfoTest extends \PHPUnit_Framework_TestCase
         // set up mock objects
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/invalidGetContactResponse.txt'
-                )
-            ),
-        ]);
-
+        $mockHandler = $this->getMockedResponse('invalidGetContactResponse.txt');
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
         // do a request
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->getContactInfo(12345);
     }
 
@@ -91,19 +71,10 @@ class GetContactInfoTest extends \PHPUnit_Framework_TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/invalidApiKeyResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('invalidApiKeyResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->getContactInfo(12345);
     }
 
@@ -114,19 +85,10 @@ class GetContactInfoTest extends \PHPUnit_Framework_TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/invalidXmlResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('invalidXmlResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(LibXMLException::class);
+        $this->expectException(LibXMLException::class);
         $api->getContactInfo(12345);
     }
 
@@ -137,19 +99,10 @@ class GetContactInfoTest extends \PHPUnit_Framework_TestCase
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
-        $mockHandler = new MockHandler([
-            new Response(
-                200,
-                [],
-                file_get_contents(
-                    dirname(__FILE__) . DIRECTORY_SEPARATOR .
-                    'MockHttpResponses/validXmlButWrongResponse.txt'
-                )
-            ),
-        ]);
+        $mockHandler = $this->getMockedResponse('validXmlButWrongResponse.txt');
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
-        $this->setExpectedException(DynadotApiException::class);
+        $this->expectException(DynadotApiException::class);
         $api->getContactInfo(12345);
     }
 }

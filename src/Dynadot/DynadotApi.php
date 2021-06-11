@@ -2,23 +2,25 @@
 
 namespace Level23\Dynadot;
 
-use GuzzleHttp\Client;
-use Level23\Dynadot\Exception\ApiHttpCallFailedException;
-use Level23\Dynadot\Exception\ApiLimitationExceededException;
-use Level23\Dynadot\Exception\DynadotApiException;
-use Level23\Dynadot\ResultObjects\DomainInfoResponse;
-use Level23\Dynadot\ResultObjects\DomainResponse;
-use Level23\Dynadot\ResultObjects\GeneralResponse;
-use Level23\Dynadot\ResultObjects\GetContactResponse;
-use Level23\Dynadot\ResultObjects\ListDomainInfoResponse;
-use Level23\Dynadot\ResultObjects\SetNsResponse;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Sabre\Xml\Reader;
+use GuzzleHttp\Client;
 use Sabre\Xml\Service;
+use Psr\Log\LoggerInterface;
+use Psr\Http\Message\StreamInterface;
+use Level23\Dynadot\ResultObjects\SetNsResponse;
+use Level23\Dynadot\ResultObjects\DomainResponse;
+use Level23\Dynadot\Exception\DynadotApiException;
+use Level23\Dynadot\ResultObjects\GeneralResponse;
+use Level23\Dynadot\ResultObjects\DomainInfoResponse;
+use Level23\Dynadot\ResultObjects\GetContactResponse;
+use Level23\Dynadot\Exception\ApiHttpCallFailedException;
+use Level23\Dynadot\ResultObjects\ListDomainInfoResponse;
+use Level23\Dynadot\Exception\ApiLimitationExceededException;
 
 /**
  * Class DynadotApi
+ *
  * @package Level23\Dynadot
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
@@ -37,38 +39,46 @@ class DynadotApi
 
     /**
      * Dynadot's API key we should use for HTTP calls.
+     *
      * @var string
      */
     protected $apiKey;
 
     /**
      * Logger for writing debug info
-     * @var LoggerInterface
+     *
+     * @var LoggerInterface|null
      */
     protected $logger;
 
     /**
      * Changes boolean values like "no" and "yes" into false and true.
-     * @param \Sabre\Xml\Reader $reader
+     *
      * @return bool
      * @throws DynadotApiException
+     * @var \Closure
      */
     protected $booleanDeserializer;
+
     /**
      * Return the contact id
+     *
      * @param Reader $reader
+     *
      * @return int
+     * @var \Closure
      */
     protected $contactIdDeserializer;
 
     /**
      * DynadotApi constructor.
      *
-     * @param string $apiKey The API key we should use while communicating with the Dynadot API.
-     * @param LoggerInterface $logger
+     * @param string                        $apiKey The API key we should use while communicating with the Dynadot API.
+     * @param \Psr\Log\LoggerInterface|null $logger
+     *
      * @internal param $Logger
      */
-    public function __construct($apiKey, LoggerInterface $logger = null)
+    public function __construct(string $apiKey, LoggerInterface $logger = null)
     {
         $this->setApiKey($apiKey);
         $this->logger = $logger;
@@ -77,35 +87,44 @@ class DynadotApi
          * Set the default guzzle options
          */
         $this->setGuzzleOptions([
-            'max' => 5,
-            'referer' => false,
-            'protocols' => ['https'],
-            'connect_timeout' => 30
+            'max'             => 5,
+            'referer'         => false,
+            'protocols'       => ['https'],
+            'connect_timeout' => 30,
         ]);
 
         /**
          * Changes boolean values like "no" and "yes" into false and true.
+         *
          * @param \Sabre\Xml\Reader $reader
+         *
          * @return bool
-         * @throws DynadotApiException
+         * @throws \Level23\Dynadot\Exception\DynadotApiException
+         * @throws \Sabre\Xml\LibXMLException
+         * @throws \Sabre\Xml\ParseException
          */
         $this->booleanDeserializer = function (Reader $reader) {
             $value = $reader->parseInnerTree();
 
             if ($value != 'yes' && $value != 'no') {
-                throw new DynadotApiException('Error, received incorrect boolean value ' . $value);
+                throw new DynadotApiException('Error, received incorrect boolean value ' . var_export($value, true));
             }
 
-            return $value == 'no' ? false : true;
+            return ($value !== 'no');
         };
 
         /**
          * Return the contact id
+         *
          * @param Reader $reader
+         *
          * @return int
+         * @throws \Sabre\Xml\LibXMLException
+         * @throws \Sabre\Xml\ParseException
          */
         $this->contactIdDeserializer = function (Reader $reader) {
-            $children = $reader->parseInnerTree();
+            $children = (array)$reader->parseInnerTree();
+
             return $children[0]['value'];
         };
     }
@@ -113,7 +132,7 @@ class DynadotApi
     /**
      * @param array $optionsArray
      */
-    public function setGuzzleOptions($optionsArray)
+    public function setGuzzleOptions(array $optionsArray)
     {
         $this->guzzleOptions = $optionsArray;
     }
@@ -121,17 +140,21 @@ class DynadotApi
     /**
      * Get info about a domain
      *
-     * @param $domain
+     * @param string $domain
+     *
      * @return DomainResponse\Domain
-     * @throws DynadotApiException
+     * @throws \Level23\Dynadot\Exception\ApiHttpCallFailedException
+     * @throws \Level23\Dynadot\Exception\DynadotApiException
+     * @throws \Sabre\Xml\ParseException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getDomainInfo($domain)
+    public function getDomainInfo(string $domain): DomainResponse\Domain
     {
         $this->log(LogLevel::INFO, 'Retrieve info for domain: ' . $domain);
 
         $requestData = [
-            'domain' => $domain,
-            'command' => 'domain_info'
+            'domain'  => $domain,
+            'command' => 'domain_info',
         ];
 
         // perform the API call
@@ -142,12 +165,12 @@ class DynadotApi
 
         // set mapping
         $sabreService->elementMap = [
-            '{}NameServers' => function (Reader $reader) {
+            '{}NameServers'          => function (Reader $reader) {
 
                 $nameservers = [];
-                $id = '';
+                $id          = '';
 
-                $children = $reader->parseInnerTree();
+                $children = (array)$reader->parseInnerTree();
 
                 foreach ($children as $child) {
                     if ($child['name'] == '{}ServerId') {
@@ -156,7 +179,7 @@ class DynadotApi
                         if (!empty($id) && !empty($child['value'])) {
                             $nameserver = new DomainResponse\NameServer();
 
-                            $nameserver->ServerId = $id;
+                            $nameserver->ServerId   = $id;
                             $nameserver->ServerName = $child['value'];
 
                             $nameservers[] = $nameserver;
@@ -167,17 +190,17 @@ class DynadotApi
 
                 return $nameservers;
             },
-            '{}Registrant' => $this->contactIdDeserializer,
-            '{}Admin' => $this->contactIdDeserializer,
-            '{}Technical' => $this->contactIdDeserializer,
-            '{}Billing' => $this->contactIdDeserializer,
-            '{}isForSale' => $this->booleanDeserializer,
-            '{}Hold' => $this->booleanDeserializer,
+            '{}Registrant'           => $this->contactIdDeserializer,
+            '{}Admin'                => $this->contactIdDeserializer,
+            '{}Technical'            => $this->contactIdDeserializer,
+            '{}Billing'              => $this->contactIdDeserializer,
+            '{}isForSale'            => $this->booleanDeserializer,
+            '{}Hold'                 => $this->booleanDeserializer,
             '{}RegistrantUnverified' => $this->booleanDeserializer,
-            '{}UdrpLocked' => $this->booleanDeserializer,
-            '{}Disabled' => $this->booleanDeserializer,
-            '{}Locked' => $this->booleanDeserializer,
-            '{}WithAds' => $this->booleanDeserializer
+            '{}UdrpLocked'           => $this->booleanDeserializer,
+            '{}Disabled'             => $this->booleanDeserializer,
+            '{}Locked'               => $this->booleanDeserializer,
+            '{}WithAds'              => $this->booleanDeserializer,
         ];
 
         // map certain values to objects
@@ -194,7 +217,7 @@ class DynadotApi
         $this->log(LogLevel::DEBUG, 'Start parsing response XML');
 
         // parse the data
-        $resultData = $sabreService->parse($response);
+        $resultData = $sabreService->parse($response->getContents());
 
         // General error, like incorrect api key
         if ($resultData instanceof GeneralResponse\Response) {
@@ -224,10 +247,11 @@ class DynadotApi
 
     /**
      * Log a message to our logger, if we have any.
-     * @param $level
-     * @param $message
+     *
+     * @param string $level
+     * @param string $message
      */
-    protected function log($level, $message)
+    protected function log(string $level, string $message): void
     {
         if ($this->logger instanceof LoggerInterface) {
             $this->logger->log($level, $message);
@@ -238,10 +262,12 @@ class DynadotApi
      * Performs the actual API call (internal method)
      *
      * @param array $requestData
-     * @throws ApiHttpCallFailedException
+     *
      * @return \Psr\Http\Message\StreamInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Level23\Dynadot\Exception\ApiHttpCallFailedException
      */
-    protected function performRawApiCall(array $requestData)
+    protected function performRawApiCall(array $requestData): StreamInterface
     {
         $this->log(LogLevel::DEBUG, 'Perform raw call: ' . var_export($requestData, true));
 
@@ -280,7 +306,7 @@ class DynadotApi
     /**
      * @return string
      */
-    public function getApiKey()
+    public function getApiKey(): string
     {
         return $this->apiKey;
     }
@@ -288,7 +314,7 @@ class DynadotApi
     /**
      * @param string $apiKey
      */
-    public function setApiKey($apiKey)
+    public function setApiKey(string $apiKey)
     {
         $this->apiKey = $apiKey;
     }
@@ -297,16 +323,20 @@ class DynadotApi
      * Set nameservers for a domain (max 13). An exception will be thrown in case of an error.
      *
      * @param string $domain The domain where to set the nameservers for.
-     * @param array $nameservers
-     * @throws ApiLimitationExceededException
-     * @throws DynadotApiException
+     * @param array  $nameservers
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Level23\Dynadot\Exception\ApiHttpCallFailedException
+     * @throws \Level23\Dynadot\Exception\ApiLimitationExceededException
+     * @throws \Level23\Dynadot\Exception\DynadotApiException
+     * @throws \Sabre\Xml\ParseException
      */
-    public function setNameserversForDomain($domain, array $nameservers)
+    public function setNameserversForDomain(string $domain, array $nameservers)
     {
         $this->log(LogLevel::DEBUG, 'Set ' . sizeof($nameservers) . ' nameservers for domain ' . $domain);
         $requestData = [
             'command' => 'set_ns',
-            'domain' => $domain
+            'domain'  => $domain,
         ];
 
         if (sizeof($nameservers) > 13) {
@@ -337,7 +367,7 @@ class DynadotApi
         $sabreService->mapValueObject('{}ResponseHeader', GeneralResponse\ResponseHeader::class);
 
         // parse the data
-        $resultData = $sabreService->parse($response);
+        $resultData = $sabreService->parse($response->getContents());
 
         // General error, like incorrect api key
         if ($resultData instanceof GeneralResponse\Response) {
@@ -364,10 +394,14 @@ class DynadotApi
 
     /**
      * List all domains in the account. We will return an array with Domain objects
+     *
      * @return DomainResponse\Domain[]
-     * @throws DynadotApiException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Level23\Dynadot\Exception\ApiHttpCallFailedException
+     * @throws \Level23\Dynadot\Exception\DynadotApiException
+     * @throws \Sabre\Xml\ParseException
      */
-    public function getDomainList()
+    public function getDomainList(): array
     {
         $this->log(LogLevel::DEBUG, 'Start retrieving all domains');
         $requestData = [
@@ -384,21 +418,20 @@ class DynadotApi
 
         // set mapping
         $sabreService->elementMap = [
-            '{}NameServers' => function (Reader $reader) {
+            '{}NameServers'          => function (Reader $reader) {
 
                 $nameservers = [];
-                $id = '';
+                $id          = '';
 
-                $children = $reader->parseInnerTree();
+                $children = (array)$reader->parseInnerTree();
 
                 foreach ($children as $child) {
                     if ($child['name'] == '{}ServerId') {
                         $id = $child['value'];
                     } elseif ($child['name'] == '{}ServerName') {
                         if (!empty($id) && !empty($child['value'])) {
-                            $nameserver = new DomainResponse\NameServer();
-                            ;
-                            $nameserver->ServerId = $id;
+                            $nameserver             = new DomainResponse\NameServer();
+                            $nameserver->ServerId   = $id;
                             $nameserver->ServerName = $child['value'];
 
                             $nameservers[] = $nameserver;
@@ -409,27 +442,27 @@ class DynadotApi
 
                 return $nameservers;
             },
-            '{}DomainInfoList' => function (Reader $reader) {
+            '{}DomainInfoList'       => function (Reader $reader) {
                 $domains = [];
 
-                $tree = $reader->parseInnerTree();
+                $tree = (array)$reader->parseInnerTree();
                 foreach ($tree as $item) {
                     $domains[] = $item['value'][0]['value'];
                 }
 
                 return $domains;
             },
-            '{}Registrant' => $this->contactIdDeserializer,
-            '{}Admin' => $this->contactIdDeserializer,
-            '{}Technical' => $this->contactIdDeserializer,
-            '{}Billing' => $this->contactIdDeserializer,
-            '{}isForSale' => $this->booleanDeserializer,
-            '{}Hold' => $this->booleanDeserializer,
+            '{}Registrant'           => $this->contactIdDeserializer,
+            '{}Admin'                => $this->contactIdDeserializer,
+            '{}Technical'            => $this->contactIdDeserializer,
+            '{}Billing'              => $this->contactIdDeserializer,
+            '{}isForSale'            => $this->booleanDeserializer,
+            '{}Hold'                 => $this->booleanDeserializer,
             '{}RegistrantUnverified' => $this->booleanDeserializer,
-            '{}UdrpLocked' => $this->booleanDeserializer,
-            '{}Disabled' => $this->booleanDeserializer,
-            '{}Locked' => $this->booleanDeserializer,
-            '{}WithAds' => $this->booleanDeserializer,
+            '{}UdrpLocked'           => $this->booleanDeserializer,
+            '{}Disabled'             => $this->booleanDeserializer,
+            '{}Locked'               => $this->booleanDeserializer,
+            '{}WithAds'              => $this->booleanDeserializer,
         ];
 
         // map certain values to objects
@@ -444,7 +477,7 @@ class DynadotApi
         $sabreService->mapValueObject('{}ResponseHeader', GeneralResponse\ResponseHeader::class);
 
         // parse the data
-        $resultData = $sabreService->parse($response);
+        $resultData = $sabreService->parse($response->getContents());
 
         // General error, like incorrect api key
         if ($resultData instanceof GeneralResponse\Response) {
@@ -473,23 +506,27 @@ class DynadotApi
      * Get contact information for a specific contact ID
      *
      * @param int $contactId The contact ID we should request
+     *
      * @return GetContactResponse\Contact
-     * @throws DynadotApiException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Level23\Dynadot\Exception\ApiHttpCallFailedException
+     * @throws \Level23\Dynadot\Exception\DynadotApiException
+     * @throws \Sabre\Xml\ParseException
      */
-    public function getContactInfo($contactId)
+    public function getContactInfo(int $contactId): GetContactResponse\Contact
     {
         $this->log(LogLevel::DEBUG, 'Fetch contact details for id ' . $contactId);
 
         $requestData = [
-            'command' => 'get_contact',
-            'contact_id' => $contactId
+            'command'    => 'get_contact',
+            'contact_id' => $contactId,
         ];
 
         // perform the API call
         $response = $this->performRawApiCall($requestData);
 
         $this->log(LogLevel::DEBUG, 'Start parsing result');
-        
+
         // start parsing XML data using Sabre
         $sabreService = new Service();
 
@@ -502,7 +539,7 @@ class DynadotApi
         $sabreService->mapValueObject('{}ResponseHeader', GeneralResponse\ResponseHeader::class);
 
         // parse the data
-        $resultData = $sabreService->parse($response);
+        $resultData = $sabreService->parse($response->getContents());
 
         // General error, like incorrect api key
         if ($resultData instanceof GeneralResponse\Response) {

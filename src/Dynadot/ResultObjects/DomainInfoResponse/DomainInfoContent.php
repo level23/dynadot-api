@@ -1,6 +1,8 @@
 <?php
 namespace Level23\Dynadot\ResultObjects\DomainInfoResponse;
 
+use Level23\Dynadot\ResultObjects\DomainResponse\Domain;
+
 class DomainInfoContent
 {
     /**
