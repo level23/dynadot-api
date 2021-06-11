@@ -264,7 +264,7 @@
             description="Run unit tests with PHPUnit">
         <exec executable="phpunit" resultproperty="result.phpunit" taskname="phpunit">
             <arg value="--configuration"/>
-            <arg path="${basedir}/build/phpunit.xml"/>
+            <arg path="${basedir}/phpunit.xml"/>
         </exec>
 
         <property name="phpunit.done" value="true"/>
@@ -276,7 +276,7 @@
             description="Run unit tests with PHPUnit">
         <exec executable="${phpunit}" resultproperty="result.phpunit" taskname="phpunit">
             <arg value="--configuration"/>
-            <arg path="${basedir}/build/phpunit.xml"/>
+            <arg path="${basedir}/phpunit.xml"/>
         </exec>
 
         <property name="phpunit.done" value="true"/>
@@ -294,7 +294,7 @@
             description="Run unit tests with PHPUnit (without generating code coverage reports)">
         <exec executable="${phpunit}" failonerror="true" taskname="phpunit">
             <arg value="--configuration"/>
-            <arg path="${basedir}/build/phpunit.xml"/>
+            <arg path="${basedir}/phpunit.xml"/>
             <arg value="--no-coverage"/>
         </exec>
 
