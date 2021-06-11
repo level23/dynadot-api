@@ -1,6 +1,14 @@
-[![Build Status](https://travis-ci.org/level23/dynadot-api.svg?branch=master)](https://travis-ci.org/level23/dynadot-api)
-
 # Dynadot-API
+
+[![Build Status](https://travis-ci.org/level23/dynadot-api.svg?branch=master)](https://travis-ci.org/level23/dynadot-api)
+[![Code Coverage](https://scrutinizer-ci.com/g/level23/dynadot-api/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/level23/dynadot-api/?branch=master)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.3-8892BF.svg)](https://php.net/)
+[![Packagist Version](https://img.shields.io/packagist/v/level23/dynadot-api.svg)](https://packagist.org/packages/level23/dynadot-api)
+[![Total Downloads](https://img.shields.io/packagist/dt/level23/dynadot-api.svg)](https://packagist.org/packages/level23/dynadot-api)
+[![Quality Score](https://scrutinizer-ci.com/g/level23/dynadot-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/level23/dynadot-api/?branch=master)
+[![Software License](https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg)](LICENSE)
+
+
 Unofficial implementation for the advanced Dynadot domain API
 
 Please note, this is a beta API implementation, based on the API description at
