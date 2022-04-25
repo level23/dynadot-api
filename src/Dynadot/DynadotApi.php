@@ -104,7 +104,7 @@ class DynadotApi
          * @throws \Sabre\Xml\ParseException
          */
         $this->booleanDeserializer = function (Reader $reader) {
-            $value = $reader->parseInnerTree();
+            $value = strtolower($reader->parseInnerTree());
 
             if ($value != 'yes' && $value != 'no') {
                 throw new DynadotApiException('Error, received incorrect boolean value ' . var_export($value, true));
