@@ -104,7 +104,7 @@ class DynadotApi
          * @throws \Sabre\Xml\ParseException
          */
         $this->booleanDeserializer = function (Reader $reader) {
-            $value = $reader->parseInnerTree();
+            $value = strtolower($reader->parseInnerTree());
 
             if ($value != 'yes' && $value != 'no') {
                 throw new DynadotApiException('Error, received incorrect boolean value ' . var_export($value, true));
@@ -446,8 +446,11 @@ class DynadotApi
                 $domains = [];
 
                 $tree = (array)$reader->parseInnerTree();
+
                 foreach ($tree as $item) {
-                    $domains[] = $item['value'][0]['value'];
+                    foreach ($item['value'] as $domain ) {
+                        $domains[] = $domain['value'];
+                    }
                 }
 
                 return $domains;
