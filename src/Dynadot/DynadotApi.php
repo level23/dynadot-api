@@ -231,12 +231,14 @@ class DynadotApi
             throw new DynadotApiException('We failed to parse the response');
         }
 
-        /**
-         * Check if the API call was successful. If not, return the error
-         */
-        $code = $resultData->DomainInfoResponseHeader->SuccessCode;
-        if ($code != DomainInfoResponse\DomainInfoResponseHeader::SUCCESSCODE_OK) {
-            throw new DynadotApiException($resultData->DomainInfoResponseHeader->Error);
+        if( $resultData->DomainInfoResponseHeader !== null ) {
+            /**
+             * Check if the API call was successful. If not, return the error
+             */
+            $code = $resultData->DomainInfoResponseHeader->SuccessCode;
+            if ($code != DomainInfoResponse\DomainInfoResponseHeader::SUCCESSCODE_OK) {
+                throw new DynadotApiException($resultData->DomainInfoResponseHeader->Error);
+            }
         }
 
         $this->log(LogLevel::DEBUG, 'Returning domain info');
@@ -355,7 +357,7 @@ class DynadotApi
         // perform the API call
         $response = $this->performRawApiCall($requestData);
 
-        $this->log(LogLevel::DEBUG, 'API call execured, parsing response...');
+        $this->log(LogLevel::DEBUG, 'API call executed, parsing response...');
 
         // start parsing XML data using Sabre
         $sabreService = new Service();
