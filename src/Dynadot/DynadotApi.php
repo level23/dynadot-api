@@ -205,7 +205,7 @@ class DynadotApi
 
         // map certain values to objects
         $sabreService->mapValueObject('{}DomainInfoResponse', DomainInfoResponse\DomainInfoResponse::class);
-        $sabreService->mapValueObject('{}DomainInfoResponseHeader', DomainInfoResponse\DomainInfoResponseHeader::class);
+        $sabreService->mapValueObject('{}DomainInfoHeader', DomainInfoResponse\DomainInfoHeader::class);
         $sabreService->mapValueObject('{}DomainInfoContent', DomainInfoResponse\DomainInfoContent::class);
         $sabreService->mapValueObject('{}Domain', DomainResponse\Domain::class);
         $sabreService->mapValueObject('{}NameServerSettings', DomainResponse\NameServerSettings::class);
@@ -231,13 +231,13 @@ class DynadotApi
             throw new DynadotApiException('We failed to parse the response');
         }
 
-        if( $resultData->DomainInfoResponseHeader !== null ) {
+        if( $resultData->DomainInfoHeader !== null ) {
             /**
              * Check if the API call was successful. If not, return the error
              */
-            $code = $resultData->DomainInfoResponseHeader->SuccessCode;
-            if ($code != DomainInfoResponse\DomainInfoResponseHeader::SUCCESSCODE_OK) {
-                throw new DynadotApiException($resultData->DomainInfoResponseHeader->Error);
+            $code = $resultData->DomainInfoHeader->SuccessCode;
+            if ($code != DomainInfoResponse\DomainInfoHeader::SUCCESSCODE_OK) {
+                throw new DynadotApiException($resultData->DomainInfoHeader->Error);
             }
         }
 
