@@ -1,8 +1,8 @@
 # Dynadot-API
 
-[![Build Status](https://travis-ci.org/level23/dynadot-api.svg?branch=master)](https://travis-ci.org/level23/dynadot-api)
+[![Build](https://github.com/level23/dynadot-api/actions/workflows/build.yml/badge.svg)](https://github.com/level23/dynadot-api/actions/workflows/build.yml)
 [![Code Coverage](https://scrutinizer-ci.com/g/level23/dynadot-api/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/level23/dynadot-api/?branch=master)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.3-8892BF.svg)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.2-8892BF.svg)](https://php.net/)
 [![Packagist Version](https://img.shields.io/packagist/v/level23/dynadot-api.svg)](https://packagist.org/packages/level23/dynadot-api)
 [![Total Downloads](https://img.shields.io/packagist/dt/level23/dynadot-api.svg)](https://packagist.org/packages/level23/dynadot-api)
 [![Quality Score](https://scrutinizer-ci.com/g/level23/dynadot-api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/level23/dynadot-api/?branch=master)
@@ -36,7 +36,7 @@ $ composer require level23/dynadot-api
 
 ## Requirements
 
-To make use if this API you have to run PHP 7.3 or higher.
+To make use if this API you have to run PHP 8.2 or higher.
 
 ## Contributing
 
