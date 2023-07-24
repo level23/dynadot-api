@@ -2,7 +2,7 @@
 
 namespace Level23\Dynadot\ResultObjects\DomainInfoResponse;
 
-class DomainInfoResponseHeader
+class DomainInfoHeader
 {
     /**
      * @var int

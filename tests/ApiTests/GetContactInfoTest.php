@@ -14,7 +14,7 @@ class GetContactInfoTest extends TestCase
     /**
      * Test how a get_contact call is handled.
      */
-    public function testValidResponse()
+    public function testValidResponse(): void
     {
         // set up mock objects
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
@@ -50,7 +50,7 @@ class GetContactInfoTest extends TestCase
     /**
      * Test invalid contact response
      */
-    public function testInvalidResponse()
+    public function testInvalidResponse(): void
     {
         // set up mock objects
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
@@ -67,7 +67,7 @@ class GetContactInfoTest extends TestCase
     /**
      * Test invalid key
      */
-    public function testInvalidKey()
+    public function testInvalidKey(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -81,7 +81,7 @@ class GetContactInfoTest extends TestCase
     /**
      * Test incorrect XML
      */
-    public function testIncorrectXml()
+    public function testIncorrectXml(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -95,7 +95,7 @@ class GetContactInfoTest extends TestCase
     /**
      * Test unexpected XML
      */
-    public function testUnexpectedXml()
+    public function testUnexpectedXml(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 

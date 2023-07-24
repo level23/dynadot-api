@@ -22,3 +22,5 @@ composer.lock
 *.jar
 
 /examples/.key
+/.phpunit.result.cache
+/.phpunit.cache/test-results

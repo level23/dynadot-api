@@ -4,9 +4,9 @@ namespace Level23\Dynadot\ResultObjects\DomainInfoResponse;
 class DomainInfoResponse
 {
     /**
-     * @var DomainInfoResponseHeader
+     * @var DomainInfoHeader
      */
-    public $DomainInfoResponseHeader;
+    public $DomainInfoHeader;
 
     /**
      * @var DomainInfoContent

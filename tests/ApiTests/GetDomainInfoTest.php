@@ -2,10 +2,8 @@
 
 namespace Level23\Dynadot\Tests\ApiTests;
 
-use GuzzleHttp\Psr7\Response;
 use Sabre\Xml\LibXMLException;
 use Level23\Dynadot\DynadotApi;
-use GuzzleHttp\Handler\MockHandler;
 use Level23\Dynadot\Exception\DynadotApiException;
 use Level23\Dynadot\ResultObjects\DomainResponse\Domain;
 
@@ -14,7 +12,7 @@ class GetDomainInfoTest extends TestCase
     /**
      * Test how a domain_info response for an invalid domain that is not owned by our account is handled.
      */
-    public function testInvalidDomain()
+    public function testInvalidDomain(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -31,7 +29,7 @@ class GetDomainInfoTest extends TestCase
     /**
      * Test how a domain_info response for an valid domain that is owned by our account is handled.
      */
-    public function testValidDomain()
+    public function testValidDomain(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -45,7 +43,7 @@ class GetDomainInfoTest extends TestCase
     /**
      * Test invalid key
      */
-    public function testInvalidKey()
+    public function testInvalidKey(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -59,7 +57,7 @@ class GetDomainInfoTest extends TestCase
     /**
      * Test incorrect XML
      */
-    public function testIncorrectXml()
+    public function testIncorrectXml(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -73,7 +71,7 @@ class GetDomainInfoTest extends TestCase
     /**
      * Test unexpected XML
      */
-    public function testUnexpectedXml()
+    public function testUnexpectedXml(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
