@@ -16,20 +16,17 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
-    "preferred-install": "dist",
-    "platform": {
-      "php": "7.3"
-    }
+    "preferred-install": "dist"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9",
-    "monolog/monolog": "^1.21",
-    "phpstan/phpstan": "^0.12.89"
+    "phpunit/phpunit": "^10",
+    "monolog/monolog": "^2|^3",
+    "phpstan/phpstan": "^1"
   },
   "require": {
-    "php": ">=7.3",
+    "php": ">=8.2",
     "guzzlehttp/guzzle": ">=6.0",
-    "psr/log": "^1.0",
+    "psr/log": "^2.0.0",
     "sabre/xml": "^2"
   },
   "autoload": {

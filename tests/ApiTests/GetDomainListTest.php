@@ -14,7 +14,7 @@ class GetDomainListTest extends TestCase
     /**
      * Test how a list_domain call is handled.
      */
-    public function testListDomains()
+    public function testListDomains(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -30,7 +30,7 @@ class GetDomainListTest extends TestCase
     /**
      * Test how a list_domain call is handled.
      */
-    public function testListDomainsInvalidResponse()
+    public function testListDomainsInvalidResponse(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -45,7 +45,7 @@ class GetDomainListTest extends TestCase
     /**
      * Test invalid key
      */
-    public function testInvalidKey()
+    public function testInvalidKey(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -59,7 +59,7 @@ class GetDomainListTest extends TestCase
     /**
      * Test incorrect XML
      */
-    public function testIncorrectXml()
+    public function testIncorrectXml(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -73,7 +73,7 @@ class GetDomainListTest extends TestCase
     /**
      * Test unexpected XML
      */
-    public function testUnexpectedXml()
+    public function testUnexpectedXml(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 

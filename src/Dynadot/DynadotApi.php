@@ -104,7 +104,10 @@ class DynadotApi
          * @throws \Sabre\Xml\ParseException
          */
         $this->booleanDeserializer = function (Reader $reader) {
-            $value = strtolower($reader->parseInnerTree());
+            $value = $reader->parseInnerTree();
+            if (is_string($value)) {
+                $value = strtolower($value);
+            }
 
             if ($value != 'yes' && $value != 'no') {
                 throw new DynadotApiException('Error, received incorrect boolean value ' . var_export($value, true));
@@ -132,7 +135,7 @@ class DynadotApi
     /**
      * @param array $optionsArray
      */
-    public function setGuzzleOptions(array $optionsArray)
+    public function setGuzzleOptions(array $optionsArray): void
     {
         $this->guzzleOptions = $optionsArray;
     }
@@ -216,22 +219,21 @@ class DynadotApi
 
         $this->log(LogLevel::DEBUG, 'Start parsing response XML');
 
-        // parse the data
-        $resultData = $sabreService->parse($response->getContents());
+        $contents = $response->getContents();
 
-        // General error, like incorrect api key
-        if ($resultData instanceof GeneralResponse\Response) {
-            $code = $resultData->ResponseHeader->ResponseCode;
-            if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
-                throw new DynadotApiException($resultData->ResponseHeader->Error);
-            }
-        }
+        // parse the data
+        $resultData = $sabreService->parse($contents);
 
         if (!$resultData instanceof DomainInfoResponse\DomainInfoResponse) {
             throw new DynadotApiException('We failed to parse the response');
         }
 
-        if( $resultData->DomainInfoHeader !== null ) {
+        $code = $resultData->DomainInfoHeader->ResponseCode ?? $resultData->DomainInfoHeader->SuccessCode;
+        if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
+            throw new DynadotApiException($resultData->DomainInfoHeader->Error);
+        }
+
+        if ($resultData->DomainInfoHeader !== null) {
             /**
              * Check if the API call was successful. If not, return the error
              */
@@ -316,7 +318,7 @@ class DynadotApi
     /**
      * @param string $apiKey
      */
-    public function setApiKey(string $apiKey)
+    public function setApiKey(string $apiKey): void
     {
         $this->apiKey = $apiKey;
     }
@@ -333,7 +335,7 @@ class DynadotApi
      * @throws \Level23\Dynadot\Exception\DynadotApiException
      * @throws \Sabre\Xml\ParseException
      */
-    public function setNameserversForDomain(string $domain, array $nameservers)
+    public function setNameserversForDomain(string $domain, array $nameservers): void
     {
         $this->log(LogLevel::DEBUG, 'Set ' . sizeof($nameservers) . ' nameservers for domain ' . $domain);
         $requestData = [
@@ -450,7 +452,7 @@ class DynadotApi
                 $tree = (array)$reader->parseInnerTree();
 
                 foreach ($tree as $item) {
-                    foreach ($item['value'] as $domain ) {
+                    foreach ($item['value'] as $domain) {
                         $domains[] = $domain['value'];
                     }
                 }

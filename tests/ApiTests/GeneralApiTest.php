@@ -13,10 +13,10 @@ class GeneralApiTest extends TestCase
     /**
      * Test if fetching the API key after instantiating the API works.
      */
-    public function testApiKey()
+    public function testApiKey(): void
     {
         $apiKey = 'bla';
-        $api = new DynadotApi($apiKey);
+        $api    = new DynadotApi($apiKey);
 
         $this->assertEquals($apiKey, $api->getApiKey());
     }
@@ -26,10 +26,10 @@ class GeneralApiTest extends TestCase
      *
      * It should throw an exception.
      */
-    public function testApi404()
+    public function testApi404(): void
     {
         $mockHandler = new MockHandler([
-            new Response(404)
+            new Response(404),
         ]);
 
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
@@ -40,7 +40,7 @@ class GeneralApiTest extends TestCase
         $response = $api->getDomainInfo('example.com');
     }
 
-    public function testLogger()
+    public function testLogger(): void
     {
         // Create the logger
         $logger = $this->getMockBuilder(Logger::class)

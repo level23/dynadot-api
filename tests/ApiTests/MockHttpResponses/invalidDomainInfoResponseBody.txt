@@ -1,1 +1,1 @@
-<DomainInfoResponse><DomainInfoResponseHeader><SuccessCode>-1</SuccessCode><Status>error</Status><Error>could not find domain in your account</Error></DomainInfoResponseHeader></DomainInfoResponse>
+<DomainInfoResponse><DomainInfoHeader><SuccessCode>-1</SuccessCode><Status>error</Status><Error>could not find domain in your account</Error></DomainInfoHeader></DomainInfoResponse>

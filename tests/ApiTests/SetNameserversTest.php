@@ -14,7 +14,7 @@ class SetNameserversTest extends TestCase
     /**
      * Test setting nameservers for a domain.
      */
-    public function testSetNameservers()
+    public function testSetNameservers(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -31,7 +31,7 @@ class SetNameserversTest extends TestCase
     /**
      * Test setting nameservers for a domain.
      */
-    public function testInvalidResponse()
+    public function testInvalidResponse(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -46,7 +46,7 @@ class SetNameserversTest extends TestCase
     /**
      * Test if some limitations the API has for setNs calls are respected and the proper exceptions are thrown.
      */
-    public function testApiLimitations()
+    public function testApiLimitations(): void
     {
         // set up mock objects
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
@@ -91,7 +91,7 @@ class SetNameserversTest extends TestCase
     /**
      * Test how a list_domain call is handled.
      */
-    public function testInvalidKey()
+    public function testInvalidKey(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -105,7 +105,7 @@ class SetNameserversTest extends TestCase
     /**
      * Test incorrect XML
      */
-    public function testIncorrectXml()
+    public function testIncorrectXml(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
@@ -119,7 +119,7 @@ class SetNameserversTest extends TestCase
     /**
      * Test unexpected XML
      */
-    public function testUnexpectedXml()
+    public function testUnexpectedXml(): void
     {
         $api = new DynadotApi('_API_KEY_GOES_HERE_');
 
