@@ -584,6 +584,7 @@ class DynadotApi
         $this->log(LogLevel::INFO, 'Set auto renew for: ' . $domain . ' to: ' . $renewOption);
 
         $requestData = [
+            'command'      => 'set_renew_option',
             'domain'       => $domain,
             'renew_option' => $renewOption,
         ];
