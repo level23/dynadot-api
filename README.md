@@ -230,7 +230,28 @@ Level23\Dynadot\ResultObjects\GetContactResponse\Contact Object
     [Country] => country
 )
 ```
-    
+
+### Set renew option with `setRenewOption`
+
+```php
+<?php
+
+use Level23\Dynadot\DynadotApi;
+
+$apiKey = 'xxx YOUR API KEY xxx';
+
+try {
+    $api = new DynadotApi($apiKey);
+    $api->setRenewOption('example.com', 'auto');
+    // ...
+} catch (Exception $e) {
+    // ... handle exception
+}
+```
+The `setRenewOption` let's you set the renewal setting for a domain. Values of for the second 
+argument ($renewOption) van be "donot", "auto", "reset". The method will return `true` when 
+the renew option is set successfully.
+
 # FAQ
 
 ## I keep getting timeouts!
