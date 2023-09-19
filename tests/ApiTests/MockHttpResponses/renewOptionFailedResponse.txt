@@ -1,0 +1,6 @@
+<SetRenewOptionResponse>
+  <SetRenewOptionHeader>
+    <SuccessCode>-1</SuccessCode>
+    <Status>failed</Status>
+  </SetRenewOptionHeader>
+</SetRenewOptionResponse>

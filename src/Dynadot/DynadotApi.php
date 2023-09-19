@@ -17,6 +17,8 @@ use Level23\Dynadot\ResultObjects\GetContactResponse;
 use Level23\Dynadot\Exception\ApiHttpCallFailedException;
 use Level23\Dynadot\ResultObjects\ListDomainInfoResponse;
 use Level23\Dynadot\Exception\ApiLimitationExceededException;
+use Level23\Dynadot\ResultObjects\RenewOptionResponse\SetRenewOptionHeader;
+use Level23\Dynadot\ResultObjects\RenewOptionResponse\SetRenewOptionResponse;
 
 /**
  * Class DynadotApi
@@ -569,5 +571,57 @@ class DynadotApi
         }
 
         return $resultData->GetContactContent->Contact;
+    }
+
+    /**
+     * @throws \Level23\Dynadot\Exception\DynadotApiException
+     * @throws \Sabre\Xml\ParseException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Level23\Dynadot\Exception\ApiHttpCallFailedException
+     */
+    public function setRenewOption(string $domain, string $renewOption): bool
+    {
+        $this->log(LogLevel::INFO, 'Set auto renew for: ' . $domain . ' to: ' . $renewOption);
+
+        $requestData = [
+            'domain'       => $domain,
+            'renew_option' => $renewOption,
+        ];
+
+        // perform the API call
+        $response = $this->performRawApiCall($requestData);
+
+        $this->log(LogLevel::DEBUG, 'Start parsing result');
+
+        // start parsing XML data using Sabre
+        $sabreService = new Service();
+
+        // map certain values to objects
+        $sabreService->mapValueObject('{}SetRenewOptionResponse', SetRenewOptionResponse::class);
+        $sabreService->mapValueObject('{}SetRenewOptionHeader', SetRenewOptionHeader::class);
+        $sabreService->mapValueObject('{}Response', GeneralResponse\Response::class);
+        $sabreService->mapValueObject('{}ResponseHeader', GeneralResponse\ResponseHeader::class);
+
+        // parse the data
+        $resultData = $sabreService->parse($response->getContents());
+
+        // General error, like incorrect api key
+        if ($resultData instanceof GeneralResponse\Response) {
+            $code = $resultData->ResponseHeader->ResponseCode;
+            if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
+                throw new DynadotApiException($resultData->ResponseHeader->Error);
+            }
+        }
+
+        if (!$resultData instanceof SetRenewOptionResponse) {
+            throw new DynadotApiException('We failed to parse the response');
+        }
+
+        $code = $resultData->SetRenewOptionHeader->SuccessCode;
+        if ($code != SetRenewOptionHeader::SUCCESSCODE_OK) {
+            throw new DynadotApiException((string)$resultData->SetRenewOptionHeader->Error);
+        }
+
+        return true;
     }
 }
