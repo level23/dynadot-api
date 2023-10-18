@@ -170,31 +170,6 @@ class DynadotApi
 
         // set mapping
         $sabreService->elementMap = [
-            '{}NameServers'          => function (Reader $reader) {
-
-                $nameservers = [];
-                $id          = '';
-
-                $children = (array)$reader->parseInnerTree();
-
-                foreach ($children as $child) {
-                    if ($child['name'] == '{}ServerId') {
-                        $id = $child['value'];
-                    } elseif ($child['name'] == '{}ServerName') {
-                        if (!empty($id) && !empty($child['value'])) {
-                            $nameserver = new DomainResponse\NameServer();
-
-                            $nameserver->ServerId   = $id;
-                            $nameserver->ServerName = $child['value'];
-
-                            $nameservers[] = $nameserver;
-                        }
-                        $id = null;
-                    }
-                }
-
-                return $nameservers;
-            },
             '{}Registrant'           => $this->contactIdDeserializer,
             '{}Admin'                => $this->contactIdDeserializer,
             '{}Technical'            => $this->contactIdDeserializer,
@@ -214,6 +189,7 @@ class DynadotApi
         $sabreService->mapValueObject('{}DomainInfoContent', DomainInfoResponse\DomainInfoContent::class);
         $sabreService->mapValueObject('{}Domain', DomainResponse\Domain::class);
         $sabreService->mapValueObject('{}NameServerSettings', DomainResponse\NameServerSettings::class);
+        $sabreService->mapValueObject('{}NameServer', DomainResponse\NameServer::class);
         $sabreService->mapValueObject('{}Whois', DomainResponse\Whois::class);
         $sabreService->mapValueObject('{}Folder', DomainResponse\Folder::class);
         $sabreService->mapValueObject('{}Response', GeneralResponse\Response::class);
