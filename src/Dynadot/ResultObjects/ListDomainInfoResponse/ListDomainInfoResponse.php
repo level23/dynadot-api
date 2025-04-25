@@ -6,10 +6,10 @@ class ListDomainInfoResponse
     /**
      * @var ListDomainInfoHeader
      */
-    public $ListDomainInfoHeader;
+    public ListDomainInfoHeader $ListDomainInfoHeader;
 
     /**
      * @var ListDomainInfoContent
      */
-    public $ListDomainInfoContent;
+    public ListDomainInfoContent $ListDomainInfoContent;
 }

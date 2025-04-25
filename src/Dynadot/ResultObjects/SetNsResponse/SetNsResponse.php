@@ -6,5 +6,5 @@ class SetNsResponse
     /**
      * @var SetNsHeader
      */
-    public $SetNsHeader;
+    public SetNsHeader $SetNsHeader;
 }

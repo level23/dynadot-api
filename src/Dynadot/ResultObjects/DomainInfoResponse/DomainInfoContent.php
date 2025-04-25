@@ -8,5 +8,5 @@ class DomainInfoContent
     /**
      * @var Domain
      */
-    public $Domain;
+    public Domain $Domain;
 }

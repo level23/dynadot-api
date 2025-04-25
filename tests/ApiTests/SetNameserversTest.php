@@ -24,8 +24,7 @@ class SetNameserversTest extends TestCase
 
         $api->setNameserversForDomain('example.com', ['ns01.example.com', 'ns02.example.com']);
 
-        // If something nasty happend, we should not reach this.
-        $this->assertTrue(true);
+        $this->expectNotToPerformAssertions();
     }
 
     /**

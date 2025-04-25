@@ -7,5 +7,5 @@ class Response
     /**
      * @var ResponseHeader
      */
-    public $ResponseHeader;
+    public ResponseHeader $ResponseHeader;
 }

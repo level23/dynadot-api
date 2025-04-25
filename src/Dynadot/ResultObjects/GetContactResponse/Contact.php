@@ -7,70 +7,70 @@ class Contact
     /**
      * @var string|null
      */
-    public $ContactId;
+    public ?string $ContactId;
 
     /**
      * @var string|null
      */
-    public $Organization;
+    public ?string $Organization;
 
     /**
      * @var string|null
      */
-    public $Name;
+    public ?string $Name;
 
     /**
      * @var string|null
      */
-    public $Email;
+    public ?string $Email;
 
     /**
      * @var string|null
      */
-    public $PhoneCc;
+    public ?string $PhoneCc;
 
     /**
      * @var string|null
      */
-    public $PhoneNum;
+    public ?string $PhoneNum;
 
     /**
      * @var string|null
      */
-    public $FaxCc;
+    public ?string $FaxCc;
 
     /**
      * @var string|null
      */
-    public $FaxNum;
+    public ?string $FaxNum;
 
     /**
      * @var string|null
      */
-    public $Address1;
+    public ?string $Address1;
 
     /**
      * @var string|null
      */
-    public $Address2;
+    public ?string $Address2;
 
     /**
      * @var string|null
      */
-    public $City;
+    public ?string $City;
 
     /**
      * @var string|null
      */
-    public $State;
+    public ?string $State;
 
     /**
      * @var string|null
      */
-    public $ZipCode;
+    public ?string $ZipCode;
 
     /**
      * @var string|null
      */
-    public $Country;
+    public ?string $Country;
 }

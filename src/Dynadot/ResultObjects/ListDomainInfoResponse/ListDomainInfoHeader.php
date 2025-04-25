@@ -7,17 +7,17 @@ class ListDomainInfoHeader
     /**
      * @var int
      */
-    public $ResponseCode;
+    public int $ResponseCode = -1;
 
     /**
      * @var string
      */
-    public $Status;
+    public string $Status = "";
 
     /**
      * @var string
      */
-    public $Error;
+    public string $Error = "";
 
     const RESPONSECODE_OK = 0;
     const RESPONSECODE_FAILURE = -1;

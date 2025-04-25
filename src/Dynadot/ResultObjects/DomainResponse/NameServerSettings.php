@@ -7,16 +7,16 @@ class NameServerSettings
     /**
      * @var string
      */
-    public $Type;
+    public string $Type;
 
     /**
-     * @var NameServer[]
+     * @var array<int,string>
      */
-    public $NameServers;
+    public array $NameServers;
 
     /**
      * In case of Type "Dynadot Parking" this value gives indication if Advertisements are shown on the parking page.
      * @var boolean
      */
-    public $WithAds;
+    public bool $WithAds;
 }

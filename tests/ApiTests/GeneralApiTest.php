@@ -57,7 +57,7 @@ class GeneralApiTest extends TestCase
 
         $api->setGuzzleOptions(['handler' => $mockHandler]);
 
-        // in this case, we pretend example.com isn't owned by us
+        // in this case, we pretend we do not own example.com
         $api->getDomainInfo('example.com');
     }
 }

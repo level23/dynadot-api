@@ -23,7 +23,6 @@ class GetDomainListTest extends TestCase
         $api->setGuzzleOptions(['handler' => $mockHandler]);
         $response = $api->getDomainList();
 
-        $this->assertTrue(is_array($response));
         $this->assertContainsOnlyInstancesOf(Domain::class, $response);
     }
 

@@ -7,5 +7,5 @@ class SetRenewOptionResponse
     /**
      * @var \Level23\Dynadot\ResultObjects\RenewOptionResponse\SetRenewOptionHeader
      */
-    public $SetRenewOptionHeader;
+    public SetRenewOptionHeader $SetRenewOptionHeader;
 }

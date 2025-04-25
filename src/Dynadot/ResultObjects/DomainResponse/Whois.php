@@ -7,20 +7,20 @@ class Whois
     /**
      * @var int
      */
-    public $Registrant;
+    public int $Registrant;
 
     /**
      * @var int
      */
-    public $Admin;
+    public int $Admin;
 
     /**
      * @var int
      */
-    public $Technical;
+    public int $Technical;
 
     /**
      * @var int
      */
-    public $Billing;
+    public int $Billing;
 }

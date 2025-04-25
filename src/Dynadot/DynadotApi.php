@@ -2,6 +2,7 @@
 
 namespace Level23\Dynadot;
 
+use Closure;
 use Psr\Log\LogLevel;
 use Sabre\Xml\Reader;
 use GuzzleHttp\Client;
@@ -24,53 +25,48 @@ use Level23\Dynadot\ResultObjects\RenewOptionResponse\SetRenewOptionResponse;
  * Class DynadotApi
  *
  * @package Level23\Dynadot
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class DynadotApi
 {
     const DYNADOT_API_URL = 'https://api.dynadot.com/api3.xml';
 
     /**
-     * This options array is used by Guzzle.
+     * This option array is used by Guzzle.
      *
      * We currently use it to set the Mock Handler in unit testing.
      *
-     * @var array
+     * @var array<int|string,mixed>
      */
-    protected $guzzleOptions = [];
+    protected array $guzzleOptions = [];
 
     /**
      * Dynadot's API key we should use for HTTP calls.
      *
      * @var string
      */
-    protected $apiKey;
+    protected string $apiKey;
 
     /**
      * Logger for writing debug info
      *
      * @var LoggerInterface|null
      */
-    protected $logger;
+    protected ?LoggerInterface $logger;
 
     /**
      * Changes boolean values like "no" and "yes" into false and true.
-     *
-     * @return bool
-     * @throws DynadotApiException
-     * @var \Closure
      */
-    protected $booleanDeserializer;
+    protected Closure $booleanDeserializer;
+
+    /**
+     * Change a value to an integer.
+     */
+    protected Closure $intDeserializer;
 
     /**
      * Return the contact id
-     *
-     * @param Reader $reader
-     *
-     * @return int
-     * @var \Closure
      */
-    protected $contactIdDeserializer;
+    protected Closure $contactIdDeserializer;
 
     /**
      * DynadotApi constructor.
@@ -80,7 +76,7 @@ class DynadotApi
      *
      * @internal param $Logger
      */
-    public function __construct(string $apiKey, LoggerInterface $logger = null)
+    public function __construct(string $apiKey, ?LoggerInterface $logger = null)
     {
         $this->setApiKey($apiKey);
         $this->logger = $logger;
@@ -105,7 +101,7 @@ class DynadotApi
          * @throws \Sabre\Xml\LibXMLException
          * @throws \Sabre\Xml\ParseException
          */
-        $this->booleanDeserializer = function (Reader $reader) {
+        $this->booleanDeserializer = function (Reader $reader): bool {
             $value = $reader->parseInnerTree();
             if (is_string($value)) {
                 $value = strtolower($value);
@@ -119,6 +115,25 @@ class DynadotApi
         };
 
         /**
+         * Changes values to an integer.
+         *
+         * @param \Sabre\Xml\Reader $reader
+         *
+         * @return int
+         * @throws \Level23\Dynadot\Exception\DynadotApiException
+         * @throws \Sabre\Xml\LibXMLException
+         * @throws \Sabre\Xml\ParseException
+         */
+        $this->intDeserializer = function (Reader $reader): int {
+            $value = $reader->parseInnerTree();
+            if (is_numeric($value)) {
+                return (int)$value;
+            }
+
+            throw new DynadotApiException('Error, received incorrect integer value ' . var_export($value, true));
+        };
+
+        /**
          * Return the contact id
          *
          * @param Reader $reader
@@ -127,15 +142,15 @@ class DynadotApi
          * @throws \Sabre\Xml\LibXMLException
          * @throws \Sabre\Xml\ParseException
          */
-        $this->contactIdDeserializer = function (Reader $reader) {
+        $this->contactIdDeserializer = function (Reader $reader): int {
             $children = (array)$reader->parseInnerTree();
 
-            return $children[0]['value'];
+            return (int)$children[0]['value'];
         };
     }
 
     /**
-     * @param array $optionsArray
+     * @param array<int|string,mixed> $optionsArray
      */
     public function setGuzzleOptions(array $optionsArray): void
     {
@@ -181,6 +196,7 @@ class DynadotApi
             '{}Disabled'             => $this->booleanDeserializer,
             '{}Locked'               => $this->booleanDeserializer,
             '{}WithAds'              => $this->booleanDeserializer,
+            '{}ResponseCode'         => $this->intDeserializer,
         ];
 
         // map certain values to objects
@@ -206,29 +222,19 @@ class DynadotApi
             throw new DynadotApiException('We failed to parse the response');
         }
 
-        $code = $resultData->DomainInfoHeader->ResponseCode ?? $resultData->DomainInfoHeader->SuccessCode;
+        $code = $resultData->DomainInfoHeader->ResponseCode ?? -1;
         if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
-            throw new DynadotApiException($resultData->DomainInfoHeader->Error);
-        }
-
-        if ($resultData->DomainInfoHeader !== null) {
-            /**
-             * Check if the API call was successful. If not, return the error
-             */
-            $code = $resultData->DomainInfoHeader->SuccessCode;
-            if ($code != DomainInfoResponse\DomainInfoHeader::SUCCESSCODE_OK) {
-                throw new DynadotApiException($resultData->DomainInfoHeader->Error);
-            }
+            throw new DynadotApiException($resultData->DomainInfoHeader?->Error ?: 'Unknown error. Response code: ' . $code);
         }
 
         $this->log(LogLevel::DEBUG, 'Returning domain info');
 
-        // Here we know our API call was succesful, return the domain info.
+        // Here we know our API call was successful, return the domain info.
         return $resultData->DomainInfoContent->Domain;
     }
 
     /**
-     * Log a message to our logger, if we have any.
+     * Log a message to our logger if we have any.
      *
      * @param string $level
      * @param string $message
@@ -243,7 +249,7 @@ class DynadotApi
     /**
      * Performs the actual API call (internal method)
      *
-     * @param array $requestData
+     * @param array<int|string,mixed> $requestData
      *
      * @return \Psr\Http\Message\StreamInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -265,12 +271,12 @@ class DynadotApi
 
         $this->log(LogLevel::DEBUG, 'Start new guzzle request with URL: ' . $url);
 
-        // start a request with out API key and optionally our request data
+        // start a request without an API key and optionally our request data
         $response = $client->request('GET', $url);
 
         $this->log(LogLevel::DEBUG, 'Received response with status code ' . $response->getStatusCode());
 
-        // if we did not get a HTTP 200 response, our HTTP call failed (which is different from a failed API call)
+        // if we did not get an HTTP 200 response, our HTTP call failed (which is different from a failed API call)
         if ($response->getStatusCode() != 200) {
             $this->log(LogLevel::ALERT, 'Received wrong HTTP status code: ' . $response->getStatusCode());
             // not ok
@@ -280,7 +286,7 @@ class DynadotApi
         }
 
         // Return the response body (which is a stream coming from Guzzle).
-        // Sabre XML semi-handles streams (it will just get the contents of the stream using stream_get_contents) so
+        // Sabre XML semi-handles streams (it will just get the contents of the stream using stream_get_contents), so
         // this should work! ;)
         return $response->getBody();
     }
@@ -304,8 +310,8 @@ class DynadotApi
     /**
      * Set nameservers for a domain (max 13). An exception will be thrown in case of an error.
      *
-     * @param string $domain The domain where to set the nameservers for.
-     * @param array  $nameservers
+     * @param string            $domain The domain where to set the nameservers for.
+     * @param array<int,string> $nameservers
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Level23\Dynadot\Exception\ApiHttpCallFailedException
@@ -322,7 +328,7 @@ class DynadotApi
         ];
 
         if (sizeof($nameservers) > 13) {
-            // index starts at 0, so we should check if the index is greater than 12 (which is 13 nameservers)
+            // the index starts at 0, so we should check if the index is greater than 12 (which is 13 nameservers)
             throw new ApiLimitationExceededException(
                 'Can not define more than 13 nameservers through the API'
             );
@@ -342,6 +348,12 @@ class DynadotApi
         // start parsing XML data using Sabre
         $sabreService = new Service();
 
+        // set mapping
+        $sabreService->elementMap = [
+            '{}ResponseCode'              => $this->intDeserializer,
+            '{}SuccessCode'              => $this->intDeserializer,
+        ];
+
         // map certain values to objects
         $sabreService->mapValueObject('{}SetNsResponse', SetNsResponse\SetNsResponse::class);
         $sabreService->mapValueObject('{}SetNsHeader', SetNsResponse\SetNsHeader::class);
@@ -351,7 +363,7 @@ class DynadotApi
         // parse the data
         $resultData = $sabreService->parse($response->getContents());
 
-        // General error, like incorrect api key
+        // General error, like an incorrect api key
         if ($resultData instanceof GeneralResponse\Response) {
             $code = $resultData->ResponseHeader->ResponseCode;
             if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
@@ -366,7 +378,7 @@ class DynadotApi
         /**
          * Check if the API call was successful. If not, return the error
          */
-        $code = $resultData->SetNsHeader->SuccessCode;
+        $code = max($resultData->SetNsHeader->SuccessCode, $resultData->SetNsHeader->ResponseCode);
         if ($code != SetNsResponse\SetNsHeader::SUCCESSCODE_OK) {
             throw new DynadotApiException($resultData->SetNsHeader->Error);
         }
@@ -448,6 +460,7 @@ class DynadotApi
             '{}Disabled'             => $this->booleanDeserializer,
             '{}Locked'               => $this->booleanDeserializer,
             '{}WithAds'              => $this->booleanDeserializer,
+            '{}ResponseCode'         => $this->intDeserializer,
         ];
 
         // map certain values to objects
@@ -464,7 +477,7 @@ class DynadotApi
         // parse the data
         $resultData = $sabreService->parse($response->getContents());
 
-        // General error, like incorrect api key
+        // General error, like an incorrect api key
         if ($resultData instanceof GeneralResponse\Response) {
             $code = $resultData->ResponseHeader->ResponseCode;
             if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
@@ -515,6 +528,11 @@ class DynadotApi
         // start parsing XML data using Sabre
         $sabreService = new Service();
 
+        // set mapping
+        $sabreService->elementMap = [
+            '{}ResponseCode' => $this->intDeserializer,
+        ];
+
         // map certain values to objects
         $sabreService->mapValueObject('{}GetContactResponse', GetContactResponse\GetContactResponse::class);
         $sabreService->mapValueObject('{}GetContactHeader', GetContactResponse\GetContactHeader::class);
@@ -526,7 +544,7 @@ class DynadotApi
         // parse the data
         $resultData = $sabreService->parse($response->getContents());
 
-        // General error, like incorrect api key
+        // General error, like an incorrect api key
         if ($resultData instanceof GeneralResponse\Response) {
             $code = $resultData->ResponseHeader->ResponseCode;
             if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
@@ -573,6 +591,12 @@ class DynadotApi
         // start parsing XML data using Sabre
         $sabreService = new Service();
 
+        // set mapping
+        $sabreService->elementMap = [
+            '{}ResponseCode'              => $this->intDeserializer,
+            '{}SuccessCode'              => $this->intDeserializer,
+        ];
+
         // map certain values to objects
         $sabreService->mapValueObject('{}SetRenewOptionResponse', SetRenewOptionResponse::class);
         $sabreService->mapValueObject('{}SetRenewOptionHeader', SetRenewOptionHeader::class);
@@ -582,7 +606,7 @@ class DynadotApi
         // parse the data
         $resultData = $sabreService->parse($response->getContents());
 
-        // General error, like incorrect api key
+        // General error, like an incorrect api key
         if ($resultData instanceof GeneralResponse\Response) {
             $code = $resultData->ResponseHeader->ResponseCode;
             if ($code != GeneralResponse\ResponseHeader::RESPONSECODE_OK) {
@@ -594,7 +618,7 @@ class DynadotApi
             throw new DynadotApiException('We failed to parse the response');
         }
 
-        $code = $resultData->SetRenewOptionHeader->SuccessCode;
+        $code = (int)$resultData->SetRenewOptionHeader->SuccessCode;
         if ($code != SetRenewOptionHeader::SUCCESSCODE_OK) {
             throw new DynadotApiException((string)$resultData->SetRenewOptionHeader->Error);
         }

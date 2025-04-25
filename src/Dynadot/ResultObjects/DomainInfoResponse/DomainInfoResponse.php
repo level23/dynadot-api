@@ -4,12 +4,12 @@ namespace Level23\Dynadot\ResultObjects\DomainInfoResponse;
 class DomainInfoResponse
 {
     /**
-     * @var DomainInfoHeader
+     * @var DomainInfoHeader|null
      */
-    public $DomainInfoHeader;
+    public ?DomainInfoHeader $DomainInfoHeader;
 
     /**
      * @var DomainInfoContent
      */
-    public $DomainInfoContent;
+    public DomainInfoContent $DomainInfoContent;
 }

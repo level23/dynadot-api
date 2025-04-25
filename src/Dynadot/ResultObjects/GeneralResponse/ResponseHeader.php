@@ -7,12 +7,12 @@ class ResponseHeader
     /**
      * @var int
      */
-    public $ResponseCode;
+    public int $ResponseCode = -1;
 
     /**
      * @var String
      */
-    public $Error;
+    public string $Error = "";
 
     const RESPONSECODE_OK = 0;
     const RESPONSECODE_FAILURE = -1;
