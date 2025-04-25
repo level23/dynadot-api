@@ -15,7 +15,7 @@ jobs:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
         php-versions: [ '8.2', '8.3', '8.4' ]
-        phpunit-versions: [ '12' ]
+        phpunit-versions: [ '11' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
