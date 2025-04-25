@@ -8,7 +8,9 @@
 
 namespace Level23\Dynadot\Exception;
 
-class DynadotApiException extends \Exception
+use Exception;
+
+class DynadotApiException extends Exception
 {
 
 }

@@ -7,5 +7,5 @@ class GetContactContent
     /**
      * @var Contact
      */
-    public $Contact;
+    public Contact $Contact;
 }

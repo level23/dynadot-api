@@ -4,12 +4,12 @@ namespace Level23\Dynadot\ResultObjects\DomainResponse;
 class NameServer
 {
     /**
-     * @var int
+     * @var string
      */
-    public $ServerId;
+    public string $ServerId;
 
     /**
      * @var string
      */
-    public $ServerName;
+    public string $ServerName;
 }

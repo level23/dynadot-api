@@ -5,12 +5,12 @@ namespace Level23\Dynadot\ResultObjects\DomainResponse;
 class Folder
 {
     /**
-     * @var int
+     * @var string
      */
-    public $FolderId;
+    public string $FolderId;
 
     /**
      * @var string
      */
-    public $FolderName;
+    public string $FolderName;
 }

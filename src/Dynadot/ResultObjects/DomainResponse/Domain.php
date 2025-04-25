@@ -7,54 +7,54 @@ class Domain
     /**
      * @var string
      */
-    public $Name;
+    public string $Name;
 
     /**
      * Unix timestamp
      * @var string
      */
-    public $Expiration;
+    public string $Expiration;
 
     /**
      * Unix timestamp
      * @var string
      */
-    public $Registration;
+    public string $Registration;
 
     /**
      * @var NameServerSettings
      */
-    public $NameServerSettings;
+    public NameServerSettings $NameServerSettings;
 
     /**
      * @var Whois
      */
-    public $Whois;
+    public Whois $Whois;
 
     /**
      * @var boolean
      */
-    public $Locked;
+    public bool $Locked;
 
     /**
      * @var boolean
      */
-    public $Disabled;
+    public bool $Disabled;
 
     /**
      * @var boolean
      */
-    public $UdrpLocked;
+    public bool $UdrpLocked;
 
     /**
      * @var boolean
      */
-    public $RegistrantUnverified;
+    public bool $RegistrantUnverified;
 
     /**
      * @var boolean
      */
-    public $Hold;
+    public bool $Hold;
 
     /**
      * Possible options (could be more):
@@ -62,25 +62,25 @@ class Domain
      * - none
      * @var string
      */
-    public $Privacy;
+    public string $Privacy;
 
     /**
      * @var boolean
      */
-    public $isForSale;
+    public bool $isForSale;
 
     /**
      * @var string
      */
-    public $RenewOption;
+    public string $RenewOption;
 
     /**
-     * @var String
+     * @var string|null
      */
-    public $Note;
+    public ?string $Note;
 
     /**
      * @var Folder
      */
-    public $Folder;
+    public Folder $Folder;
 }

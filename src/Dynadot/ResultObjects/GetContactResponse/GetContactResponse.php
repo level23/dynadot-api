@@ -7,10 +7,10 @@ class GetContactResponse
     /**
      * @var GetContactHeader
      */
-    public $GetContactHeader;
+    public GetContactHeader $GetContactHeader;
 
     /**
      * @var GetContactContent
      */
-    public $GetContactContent;
+    public GetContactContent $GetContactContent;
 }
