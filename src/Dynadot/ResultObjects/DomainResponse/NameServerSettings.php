@@ -5,18 +5,18 @@ namespace Level23\Dynadot\ResultObjects\DomainResponse;
 class NameServerSettings
 {
     /**
-     * @var string
+     * @var string|null
      */
-    public string $Type;
+    public ?string $Type = null;
 
     /**
      * @var array<int,string>
      */
-    public array $NameServers;
+    public array $NameServers = [];
 
     /**
      * In case of Type "Dynadot Parking" this value gives indication if Advertisements are shown on the parking page.
      * @var boolean
      */
-    public bool $WithAds;
+    public bool $WithAds = false;
 }
