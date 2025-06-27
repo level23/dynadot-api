@@ -1,6 +1,0 @@
-<ListDomainInfoResponse>
-  <ListDomainInfoHeader>
-    <ResponseCode>-1</ResponseCode>
-    <Error>error message here</Error>
-  </ListDomainInfoHeader>
-</ListDomainInfoResponse>

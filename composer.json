@@ -27,7 +27,8 @@
     "php": ">=8.2",
     "guzzlehttp/guzzle": ">=6.0",
     "psr/log": "^2.0|^3.0",
-    "sabre/xml": "^2"
+    "sabre/xml": "^2",
+    "ramsey/uuid": "^4.8"
   },
   "autoload": {
     "psr-4": {
