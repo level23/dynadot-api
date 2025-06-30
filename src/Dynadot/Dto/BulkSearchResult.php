@@ -7,7 +7,13 @@ final class BulkSearchResult implements DtoInterface
     /** @var array<BulkSearchDomainResult> */
     public array $domainResults;
 
-    private function __construct() {}
+    /**
+     * @param array<BulkSearchDomainResult> $domainResults
+     */
+    private function __construct(array $domainResults)
+    {
+        $this->domainResults = $domainResults;
+    }
 
     /**
      * Hydrate from Dynadot's response "Data" object.
@@ -17,7 +23,6 @@ final class BulkSearchResult implements DtoInterface
      */
     public static function fromArray(array $data): self
     {
-        $dto = new self();
         $domainResults = [];
         
         if (isset($data['domain_result_list']) && is_array($data['domain_result_list'])) {
@@ -26,8 +31,7 @@ final class BulkSearchResult implements DtoInterface
             }
         }
         
-        $dto->domainResults = $domainResults;
-        return $dto;
+        return new self($domainResults);
     }
 
     /**

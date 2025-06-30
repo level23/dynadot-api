@@ -7,7 +7,7 @@ final class DomainInfo implements DtoInterface
     public string $domainName;
     public int $expiration;
     public int $registration;
-    /** @var array<string, mixed> */
+    /** @var array<string, string> */
     public array $glueInfo;
     public int $registrantContactId;
     public int $adminContactId;
@@ -26,7 +26,52 @@ final class DomainInfo implements DtoInterface
     public string $folderName;
     public string $status;
 
-    private function __construct() {}
+    /**
+     * @param array<string, string> $glueInfo
+     */
+    private function __construct(
+        string $domainName,
+        int $expiration,
+        int $registration,
+        array $glueInfo,
+        int $registrantContactId,
+        int $adminContactId,
+        int $techContactId,
+        int $billingContactId,
+        bool $locked,
+        bool $disabled,
+        bool $udrpLocked,
+        bool $registrantUnverified,
+        bool $hold,
+        string $privacy,
+        bool $isForSale,
+        string $renewOption,
+        ?string $note,
+        int $folderId,
+        string $folderName,
+        string $status,
+    ) {
+        $this->domainName = $domainName;
+        $this->expiration = $expiration;
+        $this->registration = $registration;
+        $this->glueInfo = $glueInfo;
+        $this->registrantContactId = $registrantContactId;
+        $this->adminContactId = $adminContactId;
+        $this->techContactId = $techContactId;
+        $this->billingContactId = $billingContactId;
+        $this->locked = $locked;
+        $this->disabled = $disabled;
+        $this->udrpLocked = $udrpLocked;
+        $this->registrantUnverified = $registrantUnverified;
+        $this->hold = $hold;
+        $this->privacy = $privacy;
+        $this->isForSale = $isForSale;
+        $this->renewOption = $renewOption;
+        $this->note = $note;
+        $this->folderId = $folderId;
+        $this->folderName = $folderName;
+        $this->status = $status;
+    }
 
     /**
      * Hydrate from domain data.
@@ -36,29 +81,28 @@ final class DomainInfo implements DtoInterface
      */
     public static function fromArray(array $data): self
     {
-        $dto = new self();
-        $dto->domainName = $data['domainName'];
-        $dto->expiration = $data['expiration'];
-        $dto->registration = $data['registration'];
-        $dto->glueInfo = $data['glueInfo'];
-        $dto->registrantContactId = $data['registrant_contactId'];
-        $dto->adminContactId = $data['admin_contactId'];
-        $dto->techContactId = $data['tech_contactId'];
-        $dto->billingContactId = $data['billing_contactId'];
-        $dto->locked = $data['locked'];
-        $dto->disabled = $data['disabled'];
-        $dto->udrpLocked = $data['udrpLocked'];
-        $dto->registrantUnverified = $data['registrant_unverified'];
-        $dto->hold = $data['hold'];
-        $dto->privacy = $data['privacy'];
-        $dto->isForSale = $data['is_for_sale'];
-        $dto->renewOption = $data['renew_option'];
-        $dto->note = $data['note'];
-        $dto->folderId = $data['folder_id'];
-        $dto->folderName = $data['folder_name'];
-        $dto->status = $data['status'];
-
-        return $dto;
+        return new self(
+            $data['domainName'],
+            $data['expiration'],
+            $data['registration'],
+            $data['glueInfo'],
+            $data['registrant_contactId'],
+            $data['admin_contactId'],
+            $data['tech_contactId'],
+            $data['billing_contactId'],
+            $data['locked'],
+            $data['disabled'],
+            $data['udrpLocked'],
+            $data['registrantUnverified'],
+            $data['hold'],
+            $data['privacy'],
+            $data['is_for_sale'],
+            $data['renew_option'],
+            $data['note'],
+            $data['folder_id'],
+            $data['folder_name'],
+            $data['status'],
+        );
     }
 
     /**

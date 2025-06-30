@@ -4,10 +4,16 @@ namespace Level23\Dynadot\Dto;
 
 final class ContactListResult implements DtoInterface
 {
-    /** @var array<ContactInfoResult> */
+    /** @var array<Contact> */
     public array $contacts;
 
-    private function __construct() {}
+    /**
+     * @param array<Contact> $contacts
+     */
+    private function __construct(array $contacts)
+    {
+        $this->contacts = $contacts;
+    }
 
     /**
      * Hydrate from Dynadot's response "Data" object.
@@ -17,17 +23,15 @@ final class ContactListResult implements DtoInterface
      */
     public static function fromArray(array $data): self
     {
-        $dto = new self();
         $contacts = [];
         
         if (isset($data['contact_list']) && is_array($data['contact_list'])) {
             foreach ($data['contact_list'] as $contactData) {
-                $contacts[] = ContactInfoResult::fromArray($contactData);
+                $contacts[] = Contact::fromArray($contactData);
             }
         }
         
-        $dto->contacts = $contacts;
-        return $dto;
+        return new self($contacts);
     }
 
     /**

@@ -17,25 +17,7 @@ try {
     $domainToSearch = 'sdfjsdkfhskjfhs.com';
     $searchResult = $client->search($domainToSearch, true, 'usd');
  
-    echo "Search Results for: {$domainToSearch}\n";
-    echo "==============================\n";
-    echo "Domain: " . $searchResult->domainName . "\n";
-    echo "Available: " . $searchResult->available . "\n";
-    echo "Premium: " . $searchResult->premium . "\n";
-    
-    if (!empty($searchResult->priceList)) {
-        echo "\nPricing Information:\n";
-        echo "-------------------\n";
-        foreach ($searchResult->priceList as $price) {
-            echo "Currency: " . $price->currency . "\n";
-            echo "Unit: " . $price->unit . "\n";
-            echo "Transfer: " . $price->transfer . "\n";
-            echo "Restore: " . $price->restore . "\n";
-            echo "---\n";
-        }
-    } else {
-        echo "\nNo pricing information available.\n";
-    }
+    print_r($searchResult);
 
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "\n";

@@ -7,7 +7,13 @@ final class RenewOptionResult implements DtoInterface
     public ?int $code;
     public ?string $message;
 
-    private function __construct() {}
+    private function __construct(
+        ?int $code,
+        ?string $message,
+    ) {
+        $this->code = $code;
+        $this->message = $message;
+    }
 
     /**
      * Hydrate from Dynadot's response "Data" object.
@@ -17,12 +23,10 @@ final class RenewOptionResult implements DtoInterface
      */
     public static function fromArray(array $data): self
     {
-        $dto = new self();
-
-        $dto->code = $data['code'] ?? null;
-        $dto->message = $data['message'] ?? null;
-        
-        return $dto;
+        return new self(
+            $data['code'] ?? null,
+            $data['message'] ?? null,
+        );
     }
 
     /**

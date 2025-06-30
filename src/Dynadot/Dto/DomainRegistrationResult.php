@@ -2,17 +2,17 @@
 
 namespace Level23\Dynadot\Dto;
 
-final class BulkSearchDomainResult implements DtoInterface
+final class DomainRegistrationResult implements DtoInterface
 {
     public string $domainName;
-    public string $available;
+    public int $expirationDate;
 
     private function __construct(
         string $domainName,
-        string $available,
+        int $expirationDate,
     ) {
         $this->domainName = $domainName;
-        $this->available = $available;
+        $this->expirationDate = $expirationDate;
     }
 
     /**
@@ -25,7 +25,7 @@ final class BulkSearchDomainResult implements DtoInterface
     {
         return new self(
             $data['domain_name'] ?? '',
-            $data['available'] ?? '',
+            $data['expiration_date'] ?? 0,
         );
     }
 
@@ -36,7 +36,7 @@ final class BulkSearchDomainResult implements DtoInterface
     {
         return [
             'domain_name' => $this->domainName,
-            'available' => $this->available,
+            'expiration_date' => $this->expirationDate,
         ];
     }
 } 

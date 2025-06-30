@@ -7,7 +7,13 @@ final class DomainListResult implements DtoInterface
     /** @var array<DomainInfo> */
     public array $domains;
 
-    private function __construct() {}
+    /**
+     * @param array<DomainInfo> $domains
+     */
+    private function __construct(array $domains)
+    {
+        $this->domains = $domains;
+    }
 
     /**
      * Hydrate from Dynadot's response "Data" object.
@@ -17,7 +23,6 @@ final class DomainListResult implements DtoInterface
      */
     public static function fromArray(array $data): self
     {
-        $dto = new self();
         $domains = [];
         
         if (isset($data['domainInfo']) && is_array($data['domainInfo'])) {
@@ -26,8 +31,7 @@ final class DomainListResult implements DtoInterface
             }
         }
         
-        $dto->domains = $domains;
-        return $dto;
+        return new self($domains);
     }
 
     /**

@@ -7,7 +7,13 @@ final class NameserverUpdateResult implements DtoInterface
     public int $code;
     public string $message;
 
-    private function __construct() {}
+    private function __construct(
+        int $code,
+        string $message,
+    ) {
+        $this->code = $code;
+        $this->message = $message;
+    }
 
     /**
      * Hydrate from Dynadot's response.
@@ -17,10 +23,10 @@ final class NameserverUpdateResult implements DtoInterface
      */
     public static function fromArray(array $data): self
     {
-        $dto = new self();
-        $dto->code = $data['code'] ?? 0;
-        $dto->message = $data['message'] ?? '';
-        return $dto;
+        return new self(
+            $data['code'] ?? 0,
+            $data['message'] ?? '',
+        );
     }
 
     /**

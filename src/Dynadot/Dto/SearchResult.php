@@ -10,7 +10,20 @@ final class SearchResult implements DtoInterface
     /** @var array<PriceList> */
     public array $priceList;
 
-    private function __construct() {}
+    /**
+     * @param array<PriceList> $priceList
+     */
+    private function __construct(
+        string $domainName,
+        string $available,
+        string $premium,
+        array $priceList,
+    ) {
+        $this->domainName = $domainName;
+        $this->available = $available;
+        $this->premium = $premium;
+        $this->priceList = $priceList;
+    }
 
     /**
      * Hydrate from Dynadot's response data.
@@ -20,20 +33,19 @@ final class SearchResult implements DtoInterface
      */
     public static function fromArray(array $data): self
     {
-        $dto = new self();
-        $dto->domainName = $data['domain_name'] ?? '';
-        $dto->available = $data['available'] ?? '';
-        $dto->premium = $data['premium'] ?? '';
-        
         $priceList = [];
         if (isset($data['price_list']) && is_array($data['price_list'])) {
             foreach ($data['price_list'] as $priceData) {
                 $priceList[] = PriceList::fromArray($priceData);
             }
         }
-        $dto->priceList = $priceList;
-        
-        return $dto;
+
+        return new self(
+            $data['domain_name'] ?? '',
+            $data['available'] ?? '',
+            $data['premium'] ?? '',
+            $priceList,
+        );
     }
 
     /**

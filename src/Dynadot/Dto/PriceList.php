@@ -8,6 +8,8 @@ final class PriceList implements DtoInterface
     public string $unit;
     public string $transfer;
     public string $restore;
+    public string $registration;
+    public string $renewal;
 
     private function __construct() {}
 
@@ -22,6 +24,8 @@ final class PriceList implements DtoInterface
         $dto = new self();
         $dto->currency = $data['currency'] ?? '';
         $dto->unit = $data['unit'] ?? '';
+        $dto->registration = $data['registration'] ?? '';
+        $dto->renewal = $data['renewal'] ?? '';
         $dto->transfer = $data['transfer'] ?? '';
         $dto->restore = $data['restore'] ?? '';
         return $dto;
@@ -37,6 +41,8 @@ final class PriceList implements DtoInterface
             'unit' => $this->unit,
             'transfer' => $this->transfer,
             'restore' => $this->restore,
+            'registration' => $this->registration,
+            'renewal' => $this->renewal,
         ];
     }
 } 

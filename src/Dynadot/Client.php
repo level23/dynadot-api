@@ -11,11 +11,13 @@ use GuzzleHttp\Exception\RequestException;
 use Level23\Dynadot\Exception\ApiException;
 use Level23\Dynadot\Dto\DomainListResult;
 use Level23\Dynadot\Dto\ContactListResult;
-use Level23\Dynadot\Dto\ContactInfoResult;
+use Level23\Dynadot\Dto\Contact;
 use Level23\Dynadot\Dto\NameserverUpdateResult;
 use Level23\Dynadot\Dto\RenewOptionResult;
 use Level23\Dynadot\Dto\BulkSearchResult;
 use Level23\Dynadot\Dto\SearchResult;
+use Level23\Dynadot\Dto\DomainRegistrationResult;
+use Level23\Dynadot\Dto\DomainRegistrationRequest;
 use Level23\Dynadot\Exception\NetworkException;
 
 class Client
@@ -93,18 +95,18 @@ class Client
      * Retrieve contact information for a given contact ID.
      *
      * @param int $contactId
-     * @return ContactInfoResult
+     * @return Contact
      * @throws ApiException
      * @throws NetworkException
      */
-    public function getContactInfo(int $contactId): ContactInfoResult
+    public function getContactInfo(int $contactId): Contact
     {
-        /** @var ContactInfoResult $result */
+        /** @var Contact $result */
         $result = $this->request(
             'GET',
             "contacts/{$contactId}",
             [],
-            ContactInfoResult::class
+            Contact::class
         );
 
         return $result;
@@ -211,10 +213,32 @@ class Client
             'GET',
             "domains/{$domain}/search",
             [
-                'show_price' => $showPrice,
+                'show_price' => $showPrice ? 'true' : 'false',
                 'currency'   => $currency,
             ],
             SearchResult::class
+        );
+
+        return $result;
+    }
+
+    /**
+     * Register a new domain.
+     *
+     * @param string $domainName
+     * @param DomainRegistrationRequest $registrationData
+     * @return DomainRegistrationResult
+     * @throws ApiException
+     * @throws NetworkException
+     */
+    public function registerDomain(string $domainName, DomainRegistrationRequest $registrationData): DomainRegistrationResult
+    {
+        /** @var DomainRegistrationResult $result */
+        $result = $this->request(
+            'POST',
+            "domains/{$domainName}/register",
+            $registrationData->jsonSerialize(),
+            DomainRegistrationResult::class
         );
 
         return $result;
