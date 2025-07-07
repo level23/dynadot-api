@@ -93,7 +93,7 @@ final class DomainInfo implements DtoInterface
             $data['locked'],
             $data['disabled'],
             $data['udrpLocked'],
-            $data['registrantUnverified'],
+            $data['registrant_unverified'] ?? false,
             $data['hold'],
             $data['privacy'],
             $data['is_for_sale'],
