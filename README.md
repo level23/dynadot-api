@@ -42,6 +42,10 @@ PSR standards.
 
 See the file LICENSE for more information.
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
+
 ## Example usage
 
 See below some basic sample usages.
