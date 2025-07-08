@@ -11,7 +11,9 @@ final class PriceList implements DtoInterface
     public string $registration;
     public string $renewal;
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Hydrate from Dynadot's response data.
@@ -21,13 +23,14 @@ final class PriceList implements DtoInterface
      */
     public static function fromArray(array $data): self
     {
-        $dto = new self();
-        $dto->currency = $data['currency'] ?? '';
-        $dto->unit = $data['unit'] ?? '';
+        $dto               = new self();
+        $dto->currency     = $data['currency'] ?? '';
+        $dto->unit         = $data['unit'] ?? '';
         $dto->registration = $data['registration'] ?? '';
-        $dto->renewal = $data['renewal'] ?? '';
-        $dto->transfer = $data['transfer'] ?? '';
-        $dto->restore = $data['restore'] ?? '';
+        $dto->renewal      = $data['renewal'] ?? '';
+        $dto->transfer     = $data['transfer'] ?? '';
+        $dto->restore      = $data['restore'] ?? '';
+
         return $dto;
     }
 
@@ -37,12 +40,12 @@ final class PriceList implements DtoInterface
     public function jsonSerialize(): array
     {
         return [
-            'currency' => $this->currency,
-            'unit' => $this->unit,
-            'transfer' => $this->transfer,
-            'restore' => $this->restore,
+            'currency'     => $this->currency,
+            'unit'         => $this->unit,
+            'transfer'     => $this->transfer,
+            'restore'      => $this->restore,
             'registration' => $this->registration,
-            'renewal' => $this->renewal,
+            'renewal'      => $this->renewal,
         ];
     }
-} 
+}

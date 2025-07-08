@@ -51,26 +51,26 @@ final class DomainInfo implements DtoInterface
         string $folderName,
         string $status,
     ) {
-        $this->domainName = $domainName;
-        $this->expiration = $expiration;
-        $this->registration = $registration;
-        $this->glueInfo = $glueInfo;
-        $this->registrantContactId = $registrantContactId;
-        $this->adminContactId = $adminContactId;
-        $this->techContactId = $techContactId;
-        $this->billingContactId = $billingContactId;
-        $this->locked = $locked;
-        $this->disabled = $disabled;
-        $this->udrpLocked = $udrpLocked;
+        $this->domainName           = $domainName;
+        $this->expiration           = $expiration;
+        $this->registration         = $registration;
+        $this->glueInfo             = $glueInfo;
+        $this->registrantContactId  = $registrantContactId;
+        $this->adminContactId       = $adminContactId;
+        $this->techContactId        = $techContactId;
+        $this->billingContactId     = $billingContactId;
+        $this->locked               = $locked;
+        $this->disabled             = $disabled;
+        $this->udrpLocked           = $udrpLocked;
         $this->registrantUnverified = $registrantUnverified;
-        $this->hold = $hold;
-        $this->privacy = $privacy;
-        $this->isForSale = $isForSale;
-        $this->renewOption = $renewOption;
-        $this->note = $note;
-        $this->folderId = $folderId;
-        $this->folderName = $folderName;
-        $this->status = $status;
+        $this->hold                 = $hold;
+        $this->privacy              = $privacy;
+        $this->isForSale            = $isForSale;
+        $this->renewOption          = $renewOption;
+        $this->note                 = $note;
+        $this->folderId             = $folderId;
+        $this->folderName           = $folderName;
+        $this->status               = $status;
     }
 
     /**
@@ -111,26 +111,26 @@ final class DomainInfo implements DtoInterface
     public function jsonSerialize(): array
     {
         return [
-            'domainName' => $this->domainName,
-            'expiration' => $this->expiration,
-            'registration' => $this->registration,
-            'glueInfo' => $this->glueInfo,
+            'domainName'            => $this->domainName,
+            'expiration'            => $this->expiration,
+            'registration'          => $this->registration,
+            'glueInfo'              => $this->glueInfo,
             'registrant_contact_id' => $this->registrantContactId,
-            'admin_contact_id' => $this->adminContactId,
-            'tech_contact_id' => $this->techContactId,
-            'billing_contact_id' => $this->billingContactId,
-            'locked' => $this->locked,
-            'disabled' => $this->disabled,
-            'udrp_locked' => $this->udrpLocked,
+            'admin_contact_id'      => $this->adminContactId,
+            'tech_contact_id'       => $this->techContactId,
+            'billing_contact_id'    => $this->billingContactId,
+            'locked'                => $this->locked,
+            'disabled'              => $this->disabled,
+            'udrp_locked'           => $this->udrpLocked,
             'registrant_unverified' => $this->registrantUnverified,
-            'hold' => $this->hold,
-            'privacy' => $this->privacy,
-            'is_for_sale' => $this->isForSale,
-            'renew_option' => $this->renewOption,
-            'note' => $this->note,
-            'folder_id' => $this->folderId,
-            'folder_name' => $this->folderName,
-            'status' => $this->status,
+            'hold'                  => $this->hold,
+            'privacy'               => $this->privacy,
+            'is_for_sale'           => $this->isForSale,
+            'renew_option'          => $this->renewOption,
+            'note'                  => $this->note,
+            'folder_id'             => $this->folderId,
+            'folder_name'           => $this->folderName,
+            'status'                => $this->status,
         ];
     }
-} 
+}

@@ -53,22 +53,22 @@ class DomainRegistrationRequest implements JsonSerializable
             throw new InvalidArgumentException('Duration must be between 1 and 10 years.');
         }
 
-        $this->duration = $duration;
-        $this->authCode = $authCode;
-        $this->customerId = $customerId;
+        $this->duration              = $duration;
+        $this->authCode              = $authCode;
+        $this->customerId            = $customerId;
         $this->registrant_contact_id = $registrantContactId;
-        $this->admin_contact_id = $adminContactId;
-        $this->tech_contact_id = $techContactId;
-        $this->billing_contact_id = $billingContactId;
-        $this->registrant_contact = $registrant;
-        $this->admin_contact = $admin;
-        $this->tech_contact = $tech;
-        $this->billing_contact = $billing;
-        $this->nameserverList = $nameserverList;
-        $this->privacy = $privacy;
-        $this->currency = $currency;
-        $this->register_premium = $registerPremium;
-        $this->coupon_code = $couponCode;
+        $this->admin_contact_id      = $adminContactId;
+        $this->tech_contact_id       = $techContactId;
+        $this->billing_contact_id    = $billingContactId;
+        $this->registrant_contact    = $registrant;
+        $this->admin_contact         = $admin;
+        $this->tech_contact          = $tech;
+        $this->billing_contact       = $billing;
+        $this->nameserverList        = $nameserverList;
+        $this->privacy               = $privacy;
+        $this->currency              = $currency;
+        $this->register_premium      = $registerPremium;
+        $this->coupon_code           = $couponCode;
     }
 
     /**
@@ -118,23 +118,23 @@ class DomainRegistrationRequest implements JsonSerializable
     public function jsonSerialize(): array
     {
         $domain = [
-            'duration'                => $this->duration,
-            'auth_code'               => $this->authCode,
-            'registrant_contact_id'   => $this->registrant_contact_id,
-            'admin_contact_id'        => $this->admin_contact_id,
-            'tech_contact_id'         => $this->tech_contact_id,
-            'billing_contact_id'      => $this->billing_contact_id,
-            'registrant_contact'      => $this->registrant_contact?->jsonSerialize(),
-            'admin_contact'           => $this->admin_contact?->jsonSerialize(),
-            'tech_contact'            => $this->tech_contact?->jsonSerialize(),
-            'billing_contact'         => $this->billing_contact?->jsonSerialize(),
-            'customer_id'             => $this->customerId,
-            'name_server_list'        => $this->nameserverList,
-            'privacy'                 => $this->privacy,
+            'duration'              => $this->duration,
+            'auth_code'             => $this->authCode,
+            'registrant_contact_id' => $this->registrant_contact_id,
+            'admin_contact_id'      => $this->admin_contact_id,
+            'tech_contact_id'       => $this->tech_contact_id,
+            'billing_contact_id'    => $this->billing_contact_id,
+            'registrant_contact'    => $this->registrant_contact?->jsonSerialize(),
+            'admin_contact'         => $this->admin_contact?->jsonSerialize(),
+            'tech_contact'          => $this->tech_contact?->jsonSerialize(),
+            'billing_contact'       => $this->billing_contact?->jsonSerialize(),
+            'customer_id'           => $this->customerId,
+            'name_server_list'      => $this->nameserverList,
+            'privacy'               => $this->privacy,
         ];
 
         return [
-            'domain'           => array_filter($domain, fn($value) => $value !== null),
+            'domain'           => array_filter($domain, fn ($value) => $value !== null),
             'currency'         => $this->currency,
             'register_premium' => $this->register_premium,
             'coupon_code'      => $this->coupon_code,

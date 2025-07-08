@@ -11,7 +11,7 @@ final class DomainRegistrationResult implements DtoInterface
         string $domainName,
         int $expirationDate,
     ) {
-        $this->domainName = $domainName;
+        $this->domainName     = $domainName;
         $this->expirationDate = $expirationDate;
     }
 
@@ -35,8 +35,8 @@ final class DomainRegistrationResult implements DtoInterface
     public function jsonSerialize(): array
     {
         return [
-            'domain_name' => $this->domainName,
+            'domain_name'     => $this->domainName,
             'expiration_date' => $this->expirationDate,
         ];
     }
-} 
+}

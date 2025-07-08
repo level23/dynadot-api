@@ -1,4 +1,5 @@
 <?php
+
 namespace Level23\Dynadot\Exception;
 
 use Psr\Http\Message\RequestInterface;
@@ -16,4 +17,4 @@ class NotFoundException extends ApiException
     ) {
         parent::__construct($message, $code, $request, $response, $previous);
     }
-} 
+}

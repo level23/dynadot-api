@@ -35,20 +35,20 @@ final class Contact implements DtoInterface
         string $zip,
         string $country,
     ) {
-        $this->contactId = $contactId;
+        $this->contactId    = $contactId;
         $this->organization = $organization;
-        $this->name = $name;
-        $this->email = $email;
-        $this->phoneNumber = $phoneNumber;
-        $this->phoneCc = $phoneCc;
-        $this->faxNumber = $faxNumber;
-        $this->faxCc = $faxCc;
-        $this->address1 = $address1;
-        $this->address2 = $address2;
-        $this->city = $city;
-        $this->state = $state;
-        $this->zip = $zip;
-        $this->country = $country;
+        $this->name         = $name;
+        $this->email        = $email;
+        $this->phoneNumber  = $phoneNumber;
+        $this->phoneCc      = $phoneCc;
+        $this->faxNumber    = $faxNumber;
+        $this->faxCc        = $faxCc;
+        $this->address1     = $address1;
+        $this->address2     = $address2;
+        $this->city         = $city;
+        $this->state        = $state;
+        $this->zip          = $zip;
+        $this->country      = $country;
     }
 
     /**
@@ -138,18 +138,18 @@ final class Contact implements DtoInterface
     {
         $data = [
             'organization' => $this->organization,
-            'name' => $this->name,
-            'email' => $this->email,
+            'name'         => $this->name,
+            'email'        => $this->email,
             'phone_number' => $this->phoneNumber,
-            'phone_cc' => $this->phoneCc,
-            'fax_number' => $this->faxNumber,
-            'fax_cc' => $this->faxCc,
-            'address1' => $this->address1,
-            'address2' => $this->address2,
-            'city' => $this->city,
-            'state' => $this->state,
-            'zip' => $this->zip,
-            'country' => $this->country,
+            'phone_cc'     => $this->phoneCc,
+            'fax_number'   => $this->faxNumber,
+            'fax_cc'       => $this->faxCc,
+            'address1'     => $this->address1,
+            'address2'     => $this->address2,
+            'city'         => $this->city,
+            'state'        => $this->state,
+            'zip'          => $this->zip,
+            'country'      => $this->country,
         ];
 
         // Only include contact_id if it's not null
@@ -159,4 +159,4 @@ final class Contact implements DtoInterface
 
         return $data;
     }
-} 
+}

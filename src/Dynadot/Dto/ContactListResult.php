@@ -24,13 +24,13 @@ final class ContactListResult implements DtoInterface
     public static function fromArray(array $data): self
     {
         $contacts = [];
-        
+
         if (isset($data['contact_list']) && is_array($data['contact_list'])) {
             foreach ($data['contact_list'] as $contactData) {
                 $contacts[] = Contact::fromArray($contactData);
             }
         }
-        
+
         return new self($contacts);
     }
 
@@ -40,7 +40,7 @@ final class ContactListResult implements DtoInterface
     public function jsonSerialize(): array
     {
         return [
-            'contact_list' => array_map(fn($contact) => $contact->jsonSerialize(), $this->contacts),
+            'contact_list' => array_map(fn ($contact) => $contact->jsonSerialize(), $this->contacts),
         ];
     }
-} 
+}

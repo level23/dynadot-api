@@ -1,4 +1,5 @@
 <?php
+
 namespace Level23\Dynadot\Exception;
 
 use Exception;
@@ -13,4 +14,4 @@ class NetworkException extends Exception
     ) {
         parent::__construct($message, $code, $previous);
     }
-} 
+}

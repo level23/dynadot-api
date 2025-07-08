@@ -2,18 +2,18 @@
 
 namespace Level23\Dynadot\Tests;
 
-use PHPUnit\Framework\TestCase;
-use Level23\Dynadot\Client;
-use Level23\Dynadot\Dto\DomainListResult;
-use Level23\Dynadot\Dto\DomainInfo;
-use Level23\Dynadot\Exception\ApiException;
-use Level23\Dynadot\Exception\NetworkException;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Response;
+use Level23\Dynadot\Client;
+use Level23\Dynadot\Dto\DomainInfo;
+use Level23\Dynadot\Dto\DomainListResult;
+use Level23\Dynadot\Exception\ApiException;
+use Level23\Dynadot\Exception\NetworkException;
+use PHPUnit\Framework\TestCase;
 
 class GetDomainInfoTest extends TestCase
 {
@@ -23,15 +23,15 @@ class GetDomainInfoTest extends TestCase
     protected function setUp(): void
     {
         $this->mockHandler = new MockHandler();
-        $handlerStack = HandlerStack::create($this->mockHandler);
-        
+        $handlerStack      = HandlerStack::create($this->mockHandler);
+
         $this->client = new Client('test-api-key', 'test-api-secret');
-        
+
         // Use reflection to replace the Guzzle client with our mock
-        $reflection = new \ReflectionClass($this->client);
+        $reflection   = new \ReflectionClass($this->client);
         $httpProperty = $reflection->getProperty('http');
         $httpProperty->setAccessible(true);
-        
+
         $mockGuzzleClient = new GuzzleClient([
             'base_uri' => 'https://api.dynadot.com/restful/v1/',
             'headers'  => [
@@ -40,7 +40,7 @@ class GetDomainInfoTest extends TestCase
             ],
             'handler' => $handlerStack,
         ]);
-        
+
         $httpProperty->setValue($this->client, $mockGuzzleClient);
     }
 
@@ -51,29 +51,29 @@ class GetDomainInfoTest extends TestCase
             'data' => [
                 'domainInfo' => [
                     [
-                        'domainName' => 'example.com',
-                        'expiration' => 1735689600,
-                        'registration' => 1640995200,
-                        'glueInfo' => [],
-                        'registrant_contactId' => 12345,
-                        'admin_contactId' => 12346,
-                        'tech_contactId' => 12347,
-                        'billing_contactId' => 12348,
-                        'locked' => false,
-                        'disabled' => false,
-                        'udrpLocked' => false,
+                        'domainName'            => 'example.com',
+                        'expiration'            => 1735689600,
+                        'registration'          => 1640995200,
+                        'glueInfo'              => [],
+                        'registrant_contactId'  => 12345,
+                        'admin_contactId'       => 12346,
+                        'tech_contactId'        => 12347,
+                        'billing_contactId'     => 12348,
+                        'locked'                => false,
+                        'disabled'              => false,
+                        'udrpLocked'            => false,
                         'registrant_unverified' => false,
-                        'hold' => false,
-                        'privacy' => 'enabled',
-                        'is_for_sale' => false,
-                        'renew_option' => 'auto',
-                        'note' => 'Test domain',
-                        'folder_id' => 1,
-                        'folder_name' => 'Default',
-                        'status' => 'active'
-                    ]
-                ]
-            ]
+                        'hold'                  => false,
+                        'privacy'               => 'enabled',
+                        'is_for_sale'           => false,
+                        'renew_option'          => 'auto',
+                        'note'                  => 'Test domain',
+                        'folder_id'             => 1,
+                        'folder_name'           => 'Default',
+                        'status'                => 'active',
+                    ],
+                ],
+            ],
         ];
 
         $this->mockHandler->append(
@@ -84,7 +84,7 @@ class GetDomainInfoTest extends TestCase
 
         $this->assertInstanceOf(DomainListResult::class, $result);
         $this->assertCount(1, $result->domains);
-        
+
         $domain = $result->domains[0];
         $this->assertInstanceOf(DomainInfo::class, $domain);
         $this->assertEquals('example.com', $domain->domainName);
@@ -113,8 +113,8 @@ class GetDomainInfoTest extends TestCase
         $mockResponse = [
             'code' => 200,
             'data' => [
-                'domainInfo' => []
-            ]
+                'domainInfo' => [],
+            ],
         ];
 
         $this->mockHandler->append(
@@ -130,8 +130,8 @@ class GetDomainInfoTest extends TestCase
     public function testGetDomainInfoApiError(): void
     {
         $mockResponse = [
-            'code' => 404,
-            'message' => 'Domain not found'
+            'code'    => 404,
+            'message' => 'Domain not found',
         ];
 
         $this->mockHandler->append(
@@ -176,7 +176,7 @@ class GetDomainInfoTest extends TestCase
     public function testGetDomainInfoMissingDataKey(): void
     {
         $mockResponse = [
-            'code' => 200
+            'code' => 200,
             // Missing 'data' key
         ];
 
@@ -197,51 +197,51 @@ class GetDomainInfoTest extends TestCase
             'data' => [
                 'domainInfo' => [
                     [
-                        'domainName' => 'example1.com',
-                        'expiration' => 1735689600,
-                        'registration' => 1640995200,
-                        'glueInfo' => [],
-                        'registrant_contactId' => 12345,
-                        'admin_contactId' => 12346,
-                        'tech_contactId' => 12347,
-                        'billing_contactId' => 12348,
-                        'locked' => false,
-                        'disabled' => false,
-                        'udrpLocked' => false,
+                        'domainName'            => 'example1.com',
+                        'expiration'            => 1735689600,
+                        'registration'          => 1640995200,
+                        'glueInfo'              => [],
+                        'registrant_contactId'  => 12345,
+                        'admin_contactId'       => 12346,
+                        'tech_contactId'        => 12347,
+                        'billing_contactId'     => 12348,
+                        'locked'                => false,
+                        'disabled'              => false,
+                        'udrpLocked'            => false,
                         'registrant_unverified' => false,
-                        'hold' => false,
-                        'privacy' => 'enabled',
-                        'is_for_sale' => false,
-                        'renew_option' => 'auto',
-                        'note' => null,
-                        'folder_id' => 1,
-                        'folder_name' => 'Default',
-                        'status' => 'active'
+                        'hold'                  => false,
+                        'privacy'               => 'enabled',
+                        'is_for_sale'           => false,
+                        'renew_option'          => 'auto',
+                        'note'                  => null,
+                        'folder_id'             => 1,
+                        'folder_name'           => 'Default',
+                        'status'                => 'active',
                     ],
                     [
-                        'domainName' => 'example2.com',
-                        'expiration' => 1735776000,
-                        'registration' => 1641081600, 
-                        'glueInfo' => [],
-                        'registrant_contactId' => 12349,
-                        'admin_contactId' => 12350,
-                        'tech_contactId' => 12351,
-                        'billing_contactId' => 12352,
-                        'locked' => true,
-                        'disabled' => false,
-                        'udrpLocked' => false,
+                        'domainName'            => 'example2.com',
+                        'expiration'            => 1735776000,
+                        'registration'          => 1641081600,
+                        'glueInfo'              => [],
+                        'registrant_contactId'  => 12349,
+                        'admin_contactId'       => 12350,
+                        'tech_contactId'        => 12351,
+                        'billing_contactId'     => 12352,
+                        'locked'                => true,
+                        'disabled'              => false,
+                        'udrpLocked'            => false,
                         'registrant_unverified' => false,
-                        'hold' => false,
-                        'privacy' => 'disabled',
-                        'is_for_sale' => true,
-                        'renew_option' => 'manual',
-                        'note' => 'For sale domain',
-                        'folder_id' => 2,
-                        'folder_name' => 'For Sale',
-                        'status' => 'active'
-                    ]
-                ]
-            ]
+                        'hold'                  => false,
+                        'privacy'               => 'disabled',
+                        'is_for_sale'           => true,
+                        'renew_option'          => 'manual',
+                        'note'                  => 'For sale domain',
+                        'folder_id'             => 2,
+                        'folder_name'           => 'For Sale',
+                        'status'                => 'active',
+                    ],
+                ],
+            ],
         ];
 
         $this->mockHandler->append(
@@ -252,7 +252,7 @@ class GetDomainInfoTest extends TestCase
 
         $this->assertInstanceOf(DomainListResult::class, $result);
         $this->assertCount(2, $result->domains);
-        
+
         $domain1 = $result->domains[0];
         $this->assertEquals('example1.com', $domain1->domainName);
         $this->assertFalse($domain1->locked);
@@ -260,7 +260,7 @@ class GetDomainInfoTest extends TestCase
         $this->assertFalse($domain1->isForSale);
         $this->assertEquals('auto', $domain1->renewOption);
         $this->assertNull($domain1->note);
-        
+
         $domain2 = $result->domains[1];
         $this->assertEquals('example2.com', $domain2->domainName);
         $this->assertTrue($domain2->locked);
@@ -269,4 +269,4 @@ class GetDomainInfoTest extends TestCase
         $this->assertEquals('manual', $domain2->renewOption);
         $this->assertEquals('For sale domain', $domain2->note);
     }
-} 
+}

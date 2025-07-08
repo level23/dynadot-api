@@ -20,9 +20,9 @@ final class SearchResult implements DtoInterface
         array $priceList,
     ) {
         $this->domainName = $domainName;
-        $this->available = $available;
-        $this->premium = $premium;
-        $this->priceList = $priceList;
+        $this->available  = $available;
+        $this->premium    = $premium;
+        $this->priceList  = $priceList;
     }
 
     /**
@@ -55,9 +55,9 @@ final class SearchResult implements DtoInterface
     {
         return [
             'domain_name' => $this->domainName,
-            'available' => $this->available,
-            'premium' => $this->premium,
-            'price_list' => array_map(fn($price) => $price->jsonSerialize(), $this->priceList),
+            'available'   => $this->available,
+            'premium'     => $this->premium,
+            'price_list'  => array_map(fn ($price) => $price->jsonSerialize(), $this->priceList),
         ];
     }
-} 
+}

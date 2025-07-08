@@ -12,7 +12,7 @@ final class BulkSearchDomainResult implements DtoInterface
         string $available,
     ) {
         $this->domainName = $domainName;
-        $this->available = $available;
+        $this->available  = $available;
     }
 
     /**
@@ -36,7 +36,7 @@ final class BulkSearchDomainResult implements DtoInterface
     {
         return [
             'domain_name' => $this->domainName,
-            'available' => $this->available,
+            'available'   => $this->available,
         ];
     }
-} 
+}

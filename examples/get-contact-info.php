@@ -4,12 +4,23 @@ use Level23\Dynadot\Client;
 
 require '../vendor/autoload.php';
 
-$apiKey = file_get_contents('.key');
+$apiKey    = file_get_contents('.key');
 $apiSecret = file_get_contents('.secret');
 
 try {
-    $api = new Client($apiKey, $apiSecret);
-    print_r($api->getContactInfo(1479250));
+    // Create the Dynadot API client
+    $client = new Client($apiKey, $apiSecret);
+
+    echo "Making contact info request...\n";
+
+    // Get contact information by ID
+    $contactId   = 1479250;
+    $contactInfo = $client->getContactInfo($contactId);
+
+    echo "Contact Information Results:\n";
+    echo "===========================\n";
+    print_r($contactInfo);
+
 } catch (Exception $e) {
-    echo $e->getMessage();
+    echo "Error: " . $e->getMessage() . "\n";
 }

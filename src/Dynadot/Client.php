@@ -2,23 +2,23 @@
 
 namespace Level23\Dynadot;
 
-use Ramsey\Uuid\Uuid;
-use GuzzleHttp\Psr7\Request;
-use InvalidArgumentException;
-use Level23\Dynadot\Dto\DtoInterface;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
-use Level23\Dynadot\Exception\ApiException;
-use Level23\Dynadot\Dto\DomainListResult;
-use Level23\Dynadot\Dto\ContactListResult;
+use GuzzleHttp\Psr7\Request;
+use InvalidArgumentException;
+use Level23\Dynadot\Dto\BulkSearchResult;
 use Level23\Dynadot\Dto\Contact;
+use Level23\Dynadot\Dto\ContactListResult;
+use Level23\Dynadot\Dto\DomainListResult;
+use Level23\Dynadot\Dto\DomainRegistrationRequest;
+use Level23\Dynadot\Dto\DomainRegistrationResult;
+use Level23\Dynadot\Dto\DtoInterface;
 use Level23\Dynadot\Dto\NameserverUpdateResult;
 use Level23\Dynadot\Dto\RenewOptionResult;
-use Level23\Dynadot\Dto\BulkSearchResult;
 use Level23\Dynadot\Dto\SearchResult;
-use Level23\Dynadot\Dto\DomainRegistrationResult;
-use Level23\Dynadot\Dto\DomainRegistrationRequest;
+use Level23\Dynadot\Exception\ApiException;
 use Level23\Dynadot\Exception\NetworkException;
+use Ramsey\Uuid\Uuid;
 
 class Client
 {
@@ -152,6 +152,7 @@ class Client
             [],
             DomainListResult::class
         );
+
         return $result;
     }
 
@@ -259,21 +260,21 @@ class Client
     private function request(string $method, string $path, array $params, string $dtoClass): DtoInterface
     {
         $requestId = Uuid::uuid4()->toString();
-        
+
         // Prepare request options
         $options = [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'X-Request-Id'  => $requestId,
-                'Accept'       => 'application/json',
-                'Content-Type' => 'application/json',
-            ]
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
+            ],
         ];
 
         // For GET requests, use params as query parameters
-        if ($method === 'GET' && !empty($params)) {
+        if ($method === 'GET' && ! empty($params)) {
             $options['query'] = $params;
-            $payloadJson = '';
+            $payloadJson      = '';
         } else {
             $payloadJson = json_encode($params, JSON_UNESCAPED_SLASHES);
             if ($payloadJson === false) {
@@ -288,7 +289,7 @@ class Client
             $requestId,
             $payloadJson,
         ]);
-        $signature = hash_hmac('sha256', $stringToSign, $this->apiSecret);
+        $signature                         = hash_hmac('sha256', $stringToSign, $this->apiSecret);
         $options['headers']['X-Signature'] = $signature;
 
         try {
@@ -312,10 +313,11 @@ class Client
         if ($data['code'] >= 400) {
             // Create a request object for the exception
             $request = new Request($method, $path, $options['headers'], $options['body'] ?? null);
+
             throw ApiException::fromResponse($request, $response);
         }
 
-        if (!is_a($dtoClass, DtoInterface::class, true)) {
+        if (! is_a($dtoClass, DtoInterface::class, true)) {
             throw new InvalidArgumentException("$dtoClass must implement DtoInterface");
         }
 

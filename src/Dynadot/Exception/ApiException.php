@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Level23\Dynadot\Exception;
 
 use Exception;
-use Throwable;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class ApiException extends Exception
 {
@@ -63,7 +63,7 @@ class ApiException extends Exception
         $body = (string) $res->getBody();
         $data = json_decode($body, true);
         $code = $data['code'] ?? $res->getStatusCode();
-        
+
         if (json_last_error() !== JSON_ERROR_NONE) {
             $msg = 'Invalid JSON in error response: ' . json_last_error_msg();
         } else {

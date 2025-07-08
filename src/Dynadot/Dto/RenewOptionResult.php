@@ -11,7 +11,7 @@ final class RenewOptionResult implements DtoInterface
         ?int $code,
         ?string $message,
     ) {
-        $this->code = $code;
+        $this->code    = $code;
         $this->message = $message;
     }
 
@@ -35,8 +35,8 @@ final class RenewOptionResult implements DtoInterface
     public function jsonSerialize(): array
     {
         return [
-            'code' => $this->code,
+            'code'    => $this->code,
             'message' => $this->message,
         ];
     }
-} 
+}
