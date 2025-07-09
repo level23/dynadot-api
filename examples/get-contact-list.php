@@ -11,15 +11,14 @@ try {
     // Create the Dynadot API client
     $client = new Client($apiKey, $apiSecret, true);
 
-    echo "Making contact info request...\n";
+    echo "Making contact list request...\n";
 
-    // Get contact information by ID
-    $contactId   = 1479250;
-    $contactInfo = $client->getContactInfo($contactId);
+    // Get the list of all contacts
+    $contactList = $client->getContactList();
 
-    echo "Contact Information Results:\n";
-    echo "===========================\n";
-    print_r($contactInfo);
+    echo "Contact List Results:\n";
+    echo "====================\n";
+    print_r($contactList);
 
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "\n";

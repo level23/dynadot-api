@@ -11,15 +11,15 @@ try {
     // Create the Dynadot API client
     $client = new Client($apiKey, $apiSecret, true);
 
-    echo "Making contact info request...\n";
+    echo "Making domain search request...\n";
 
-    // Get contact information by ID
-    $contactId   = 1479250;
-    $contactInfo = $client->getContactInfo($contactId);
+    // Search for a specific domain
+    $domainToSearch = 'sdfjsdkfhskjfhs.com';
+    $searchResult   = $client->search($domainToSearch, true, 'usd');
 
-    echo "Contact Information Results:\n";
-    echo "===========================\n";
-    print_r($contactInfo);
+    echo "Search Results:\n";
+    echo "===============\n";
+    print_r($searchResult);
 
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "\n";

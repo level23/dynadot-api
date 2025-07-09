@@ -1,1 +1,0 @@
-<SetNsResponse><SetNsHeader><SuccessCode>-1</SuccessCode><Status>error</Status><Error>could not find exmple.com in your account</Error></SetNsHeader></SetNsResponse>

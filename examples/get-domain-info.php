@@ -1,22 +1,26 @@
 <?php
 
-use Level23\Dynadot\DynadotApi;
-use Monolog\Logger;
-
+use Level23\Dynadot\Client;
 
 require '../vendor/autoload.php';
 
-$apiKey = file_get_contents('.key');
-
-// Create the logger
-$logger = new Logger('my_logger');
-
-$logger->pushHandler(new \Monolog\Handler\ErrorLogHandler());
-$logger->addInfo('Key: ' . $apiKey);
+$apiKey    = file_get_contents('.key');
+$apiSecret = file_get_contents('.secret');
 
 try {
-    $api = new DynadotApi($apiKey, $logger);
-    print_r($api->getDomainInfo('example.com'));
+    // Create the Dynadot API client
+    $client = new Client($apiKey, $apiSecret, true);
+
+    echo "Making domain info request...\n";
+
+    // Get domain information
+    $domainName       = 'freshcontffoffer.xyz';
+    $domainInfoResult = $client->getDomainInfo($domainName);
+
+    echo "Domain Information Results:\n";
+    echo "==========================\n";
+    print_r($domainInfoResult);
+
 } catch (Exception $e) {
-    echo $e->getMessage();
+    echo "Error: " . $e->getMessage() . "\n";
 }
