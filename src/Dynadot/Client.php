@@ -281,7 +281,7 @@ class Client
         ];
 
         // For GET requests, use params as query parameters
-        if ($method === 'GET' && !empty($params)) {
+        if ($method === 'GET' && ! empty($params)) {
             $options['query'] = $params;
             $payloadJson      = '';
         } else {
@@ -292,7 +292,7 @@ class Client
             $options['body'] = $payloadJson;
         }
 
-        $stringToSign                      = implode("\n", [
+        $stringToSign = implode("\n", [
             $this->apiKey,
             '/' . trim($path, '/'),
             $requestId,
@@ -326,7 +326,7 @@ class Client
             throw ApiException::fromResponse($request, $response);
         }
 
-        if (!is_a($dtoClass, DtoInterface::class, true)) {
+        if (! is_a($dtoClass, DtoInterface::class, true)) {
             throw new InvalidArgumentException("$dtoClass must implement DtoInterface");
         }
 
