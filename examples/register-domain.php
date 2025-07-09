@@ -11,7 +11,7 @@ $apiSecret = file_get_contents('.secret');
 
 try {
     // Create the Dynadot API client
-    $client = new Client($apiKey, $apiSecret);
+    $client = new Client($apiKey, $apiSecret, true);
 
     echo "Making domain registration request...\n";
 

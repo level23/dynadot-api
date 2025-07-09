@@ -34,12 +34,12 @@ class Client
     /** @var string */
     private string $apiVersion = 'v1';
 
-    public function __construct(string $apiKey, string $apiSecret)
+    public function __construct(string $apiKey, string $apiSecret, bool $sandbox = false)
     {
         $this->apiKey    = $apiKey;
         $this->apiSecret = $apiSecret;
         $this->http      = new GuzzleClient([
-            'base_uri' => 'https://api.dynadot.com/restful/' . $this->apiVersion . '/',
+            'base_uri' => 'https://api' . ($sandbox ? '-sandbox' : '') . '.dynadot.com/restful/' . $this->apiVersion . '/',
             'headers'  => [
                 'Accept'       => 'application/json',
                 'Content-Type' => 'application/json',
@@ -51,6 +51,7 @@ class Client
      * Retrieve detailed information about a single domain.
      *
      * @param string $domainName
+     *
      * @return DomainListResult
      * @throws ApiException
      * @throws NetworkException
@@ -71,8 +72,9 @@ class Client
     /**
      * Set nameservers for a domain.
      *
-     * @param string $domainName
+     * @param string        $domainName
      * @param array<string> $nameservers
+     *
      * @throws ApiException
      * @throws NetworkException
      */
@@ -95,6 +97,7 @@ class Client
      * Retrieve contact information for a given contact ID.
      *
      * @param int $contactId
+     *
      * @return Contact
      * @throws ApiException
      * @throws NetworkException
@@ -161,6 +164,7 @@ class Client
      *
      * @param string $domain
      * @param string $renewOption
+     *
      * @return RenewOptionResult
      * @throws ApiException
      * @throws NetworkException
@@ -182,6 +186,7 @@ class Client
      * Search for multiple domains at once.
      *
      * @param array<string> $domains
+     *
      * @return BulkSearchResult
      * @throws ApiException
      * @throws NetworkException
@@ -203,6 +208,7 @@ class Client
      * Search for a domain.
      *
      * @param string $domain
+     *
      * @return SearchResult
      * @throws ApiException
      * @throws NetworkException
@@ -226,14 +232,17 @@ class Client
     /**
      * Register a new domain.
      *
-     * @param string $domainName
+     * @param string                    $domainName
      * @param DomainRegistrationRequest $registrationData
+     *
      * @return DomainRegistrationResult
      * @throws ApiException
      * @throws NetworkException
      */
-    public function registerDomain(string $domainName, DomainRegistrationRequest $registrationData): DomainRegistrationResult
-    {
+    public function registerDomain(
+        string $domainName,
+        DomainRegistrationRequest $registrationData
+    ): DomainRegistrationResult {
         /** @var DomainRegistrationResult $result */
         $result = $this->request(
             'POST',
@@ -248,10 +257,10 @@ class Client
     /**
      * Generic request helper that wraps Guzzle exceptions and hydrates DTOs.
      *
-     * @param string $method
-     * @param string $path
-     * @param array<string, mixed>  $params
-     * @param string $dtoClass
+     * @param string               $method
+     * @param string               $path
+     * @param array<string, mixed> $params
+     * @param string               $dtoClass
      *
      * @return DtoInterface
      * @throws ApiException
@@ -272,7 +281,7 @@ class Client
         ];
 
         // For GET requests, use params as query parameters
-        if ($method === 'GET' && ! empty($params)) {
+        if ($method === 'GET' && !empty($params)) {
             $options['query'] = $params;
             $payloadJson      = '';
         } else {
@@ -283,7 +292,7 @@ class Client
             $options['body'] = $payloadJson;
         }
 
-        $stringToSign = implode("\n", [
+        $stringToSign                      = implode("\n", [
             $this->apiKey,
             '/' . trim($path, '/'),
             $requestId,
@@ -317,7 +326,7 @@ class Client
             throw ApiException::fromResponse($request, $response);
         }
 
-        if (! is_a($dtoClass, DtoInterface::class, true)) {
+        if (!is_a($dtoClass, DtoInterface::class, true)) {
             throw new InvalidArgumentException("$dtoClass must implement DtoInterface");
         }
 
