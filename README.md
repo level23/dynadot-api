@@ -291,6 +291,26 @@ try {
 }
 ```
 
+### Get account information with `getAccountInfo`
+
+```php
+<?php
+use Level23\Dynadot\Client;
+
+$apiKey = 'xxx YOUR API KEY xxx';
+$apiSecret = 'xxx YOUR API SECRET xxx';
+
+try {
+    $client = new Client($apiKey, $apiSecret);
+    $accountInfo = $client->getAccountInfo();
+    print_r($accountInfo);
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+```
+
+This returns a `Level23\Dynadot\Dto\AccountInfo` object with your account details.
+
 ## Available Methods
 
 The following methods are available in the `Client` class:
@@ -304,6 +324,7 @@ The following methods are available in the `Client` class:
 - `search(string $domain, bool $showPrice = false, string $currency = 'USD')` - Search for domain availability
 - `bulkSearch(array $domains)` - Search for multiple domains at once
 - `registerDomain(string $domainName, DomainRegistrationRequest $registrationData)` - Register a new domain
+- `getAccountInfo()` - Get information about the authenticated Dynadot account
 
 ## Error Handling
 

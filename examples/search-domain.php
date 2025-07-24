@@ -1,26 +1,19 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 use Level23\Dynadot\Client;
 
-require '../vendor/autoload.php';
+$apiKey    = getenv('DYNADOT_API_KEY');
+$apiSecret = getenv('DYNADOT_API_SECRET');
 
-$apiKey    = file_get_contents('.key');
-$apiSecret = file_get_contents('.secret');
+$client = new Client($apiKey, $apiSecret);
 
 try {
-    // Create the Dynadot API client
-    $client = new Client($apiKey, $apiSecret, true);
-
-    echo "Making domain search request...\n";
-
-    // Search for a specific domain
     $domainToSearch = 'sdfjsdkfhskjfhs.com';
     $searchResult   = $client->search($domainToSearch, true, 'usd');
-
-    echo "Search Results:\n";
-    echo "===============\n";
-    print_r($searchResult);
-
+    echo json_encode($searchResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "\n";
+    exit(1);
 }
