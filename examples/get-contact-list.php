@@ -1,25 +1,18 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 use Level23\Dynadot\Client;
 
-require '../vendor/autoload.php';
+$apiKey    = getenv('DYNADOT_API_KEY');
+$apiSecret = getenv('DYNADOT_API_SECRET');
 
-$apiKey    = file_get_contents('.key');
-$apiSecret = file_get_contents('.secret');
+$client = new Client($apiKey, $apiSecret);
 
 try {
-    // Create the Dynadot API client
-    $client = new Client($apiKey, $apiSecret, true);
-
-    echo "Making contact list request...\n";
-
-    // Get the list of all contacts
     $contactList = $client->getContactList();
-
-    echo "Contact List Results:\n";
-    echo "====================\n";
-    print_r($contactList);
-
+    echo json_encode($contactList, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "\n";
+    exit(1);
 }

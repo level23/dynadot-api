@@ -6,6 +6,7 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use InvalidArgumentException;
+use Level23\Dynadot\Dto\AccountInfoResult;
 use Level23\Dynadot\Dto\BulkSearchResult;
 use Level23\Dynadot\Dto\Contact;
 use Level23\Dynadot\Dto\ContactListResult;
@@ -249,6 +250,26 @@ class Client
             "domains/{$domainName}/register",
             $registrationData->jsonSerialize(),
             DomainRegistrationResult::class
+        );
+
+        return $result;
+    }
+
+    /**
+     * Retrieve account information for the authenticated user.
+     *
+     * @return AccountInfoResult
+     * @throws ApiException
+     * @throws NetworkException
+     */
+    public function getAccountInfo(): AccountInfoResult
+    {
+        /** @var AccountInfoResult $result */
+        $result = $this->request(
+            'GET',
+            'accounts/info',
+            [],
+            AccountInfoResult::class
         );
 
         return $result;

@@ -1,21 +1,17 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 use Level23\Dynadot\Client;
 use Level23\Dynadot\Dto\Contact;
 use Level23\Dynadot\Dto\DomainRegistrationRequest;
 
-require '../vendor/autoload.php';
+$apiKey    = getenv('DYNADOT_API_KEY');
+$apiSecret = getenv('DYNADOT_API_SECRET');
 
-$apiKey    = file_get_contents('.key');
-$apiSecret = file_get_contents('.secret');
+$client = new Client($apiKey, $apiSecret);
 
 try {
-    // Create the Dynadot API client
-    $client = new Client($apiKey, $apiSecret, true);
-
-    echo "Making domain registration request...\n";
-
-    // Create a registrant contact
     $registrantContact = Contact::create(
         organization: 'Example Corp',
         name: 'John Doe',
@@ -29,7 +25,6 @@ try {
         country: 'US',
     );
 
-    // Create domain registration request
     $registrationData = DomainRegistrationRequest::create(
         duration: 1,
         authCode: '',
@@ -45,21 +40,9 @@ try {
         couponCode: '',
     );
 
-    // Register the domain
     $result = $client->registerDomain('example.com', $registrationData);
-
-    echo "Domain Registration Results:\n";
-    echo "============================\n";
-    print_r($result);
-
-    // Example: You can also use existing contacts by ID
-    // First, get a list of existing contacts
-    $contactList = $client->getContactList();
-    if (! empty($contactList->contacts)) {
-        $existingContact = $contactList->contacts[0];
-        echo "Using existing contact: " . $existingContact->name . " (ID: " . $existingContact->contactId . ")\n";
-    }
-
+    echo json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "\n";
+    exit(1);
 }
