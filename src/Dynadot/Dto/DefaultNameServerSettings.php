@@ -4,30 +4,15 @@ namespace Level23\Dynadot\Dto;
 
 final class DefaultNameServerSettings implements DtoInterface
 {
-    public string $type;
-    public string $withAds;
-    public string $forwardTo;
-    public string $forwardType;
-    public string $websiteTitle;
-    public string $ttl;
-    public EmailForwarding $emailForwarding;
-
     public function __construct(
-        string $type = '',
-        string $withAds = '',
-        string $forwardTo = '',
-        string $forwardType = '',
-        string $websiteTitle = '',
-        string $ttl = '',
-        ?EmailForwarding $emailForwarding = null
+        public string $type = '',
+        public string $withAds = '',
+        public string $forwardTo = '',
+        public string $forwardType = '',
+        public string $websiteTitle = '',
+        public string $ttl = '',
+        public EmailForwarding $emailForwarding = new EmailForwarding(),
     ) {
-        $this->type            = $type;
-        $this->withAds         = $withAds;
-        $this->forwardTo       = $forwardTo;
-        $this->forwardType     = $forwardType;
-        $this->websiteTitle    = $websiteTitle;
-        $this->ttl             = $ttl;
-        $this->emailForwarding = $emailForwarding ?? new EmailForwarding();
     }
 
     public static function fromArray(array $data): self

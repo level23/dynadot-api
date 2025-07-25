@@ -4,11 +4,8 @@ namespace Level23\Dynadot\Dto;
 
 final class AccountInfoResult implements DtoInterface
 {
-    public AccountInfo $accountInfo;
-
-    public function __construct(AccountInfo $accountInfo)
+    public function __construct(public AccountInfo $accountInfo)
     {
-        $this->accountInfo = $accountInfo;
     }
 
     public static function fromArray(array $data): self

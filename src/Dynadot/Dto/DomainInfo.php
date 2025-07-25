@@ -4,73 +4,31 @@ namespace Level23\Dynadot\Dto;
 
 final class DomainInfo implements DtoInterface
 {
-    public string $domainName;
-    public int $expiration;
-    public int $registration;
-    /** @var array<string, string> */
-    public array $glueInfo;
-    public int $registrantContactId;
-    public int $adminContactId;
-    public int $techContactId;
-    public int $billingContactId;
-    public bool $locked;
-    public bool $disabled;
-    public bool $udrpLocked;
-    public bool $registrantUnverified;
-    public bool $hold;
-    public string $privacy;
-    public bool $isForSale;
-    public string $renewOption;
-    public ?string $note;
-    public int $folderId;
-    public string $folderName;
-    public string $status;
-
     /**
      * @param array<string, string> $glueInfo
      */
     private function __construct(
-        string $domainName,
-        int $expiration,
-        int $registration,
-        array $glueInfo,
-        int $registrantContactId,
-        int $adminContactId,
-        int $techContactId,
-        int $billingContactId,
-        bool $locked,
-        bool $disabled,
-        bool $udrpLocked,
-        bool $registrantUnverified,
-        bool $hold,
-        string $privacy,
-        bool $isForSale,
-        string $renewOption,
-        ?string $note,
-        int $folderId,
-        string $folderName,
-        string $status,
+        public string $domainName,
+        public int $expiration,
+        public int $registration,
+        public array $glueInfo,
+        public int $registrantContactId,
+        public int $adminContactId,
+        public int $techContactId,
+        public int $billingContactId,
+        public bool $locked,
+        public bool $disabled,
+        public bool $udrpLocked,
+        public bool $registrantUnverified,
+        public bool $hold,
+        public string $privacy,
+        public bool $isForSale,
+        public string $renewOption,
+        public ?string $note,
+        public int $folderId,
+        public string $folderName,
+        public string $status,
     ) {
-        $this->domainName           = $domainName;
-        $this->expiration           = $expiration;
-        $this->registration         = $registration;
-        $this->glueInfo             = $glueInfo;
-        $this->registrantContactId  = $registrantContactId;
-        $this->adminContactId       = $adminContactId;
-        $this->techContactId        = $techContactId;
-        $this->billingContactId     = $billingContactId;
-        $this->locked               = $locked;
-        $this->disabled             = $disabled;
-        $this->udrpLocked           = $udrpLocked;
-        $this->registrantUnverified = $registrantUnverified;
-        $this->hold                 = $hold;
-        $this->privacy              = $privacy;
-        $this->isForSale            = $isForSale;
-        $this->renewOption          = $renewOption;
-        $this->note                 = $note;
-        $this->folderId             = $folderId;
-        $this->folderName           = $folderName;
-        $this->status               = $status;
     }
 
     /**

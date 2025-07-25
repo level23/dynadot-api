@@ -4,48 +4,21 @@ namespace Level23\Dynadot\Dto;
 
 final class AccountContact implements DtoInterface
 {
-    public string $organization;
-    public string $name;
-    public string $email;
-    public string $phoneNumber;
-    public string $phoneCc;
-    public string $faxNumber;
-    public string $faxCc;
-    public string $address1;
-    public string $address2;
-    public string $city;
-    public string $state;
-    public string $zip;
-    public string $country;
-
     public function __construct(
-        string $organization = '',
-        string $name = '',
-        string $email = '',
-        string $phoneNumber = '',
-        string $phoneCc = '',
-        string $faxNumber = '',
-        string $faxCc = '',
-        string $address1 = '',
-        string $address2 = '',
-        string $city = '',
-        string $state = '',
-        string $zip = '',
-        string $country = ''
+        public string $organization = '',
+        public string $name = '',
+        public string $email = '',
+        public string $phoneNumber = '',
+        public string $phoneCc = '',
+        public string $faxNumber = '',
+        public string $faxCc = '',
+        public string $address1 = '',
+        public string $address2 = '',
+        public string $city = '',
+        public string $state = '',
+        public string $zip = '',
+        public string $country = ''
     ) {
-        $this->organization = $organization;
-        $this->name         = $name;
-        $this->email        = $email;
-        $this->phoneNumber  = $phoneNumber;
-        $this->phoneCc      = $phoneCc;
-        $this->faxNumber    = $faxNumber;
-        $this->faxCc        = $faxCc;
-        $this->address1     = $address1;
-        $this->address2     = $address2;
-        $this->city         = $city;
-        $this->state        = $state;
-        $this->zip          = $zip;
-        $this->country      = $country;
     }
 
     public static function fromArray(array $data): self

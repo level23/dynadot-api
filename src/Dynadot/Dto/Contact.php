@@ -4,36 +4,21 @@ namespace Level23\Dynadot\Dto;
 
 final class Contact implements DtoInterface
 {
-    public ?int $contactId;
-    public string $organization;
-    public string $name;
-    public string $email;
-    public string $phoneNumber;
-    public string $phoneCc;
-    public string $faxNumber;
-    public string $faxCc;
-    public string $address1;
-    public string $address2;
-    public string $city;
-    public string $state;
-    public string $zip;
-    public string $country;
-
     private function __construct(
-        ?int $contactId,
-        string $organization,
-        string $name,
-        string $email,
-        string $phoneNumber,
-        string $phoneCc,
-        string $faxNumber,
-        string $faxCc,
-        string $address1,
-        string $address2,
-        string $city,
-        string $state,
-        string $zip,
-        string $country,
+        public ?int $contactId,
+        public string $organization,
+        public string $name,
+        public string $email,
+        public string $phoneNumber,
+        public string $phoneCc,
+        public string $faxNumber,
+        public string $faxCc,
+        public string $address1,
+        public string $address2,
+        public string $city,
+        public string $state,
+        public string $zip,
+        public string $country,
     ) {
         $this->contactId    = $contactId;
         $this->organization = $organization;

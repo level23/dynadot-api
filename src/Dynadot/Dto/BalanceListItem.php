@@ -4,13 +4,10 @@ namespace Level23\Dynadot\Dto;
 
 final class BalanceListItem implements DtoInterface
 {
-    public string $currency;
-    public string $amount;
-
-    public function __construct(string $currency = '', string $amount = '')
-    {
-        $this->currency = $currency;
-        $this->amount   = $amount;
+    public function __construct(
+        public string $currency = '',
+        public string $amount = ''
+    ) {
     }
 
     public static function fromArray(array $data): self

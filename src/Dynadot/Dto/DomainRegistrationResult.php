@@ -4,15 +4,10 @@ namespace Level23\Dynadot\Dto;
 
 final class DomainRegistrationResult implements DtoInterface
 {
-    public string $domainName;
-    public int $expirationDate;
-
-    private function __construct(
-        string $domainName,
-        int $expirationDate,
+    public function __construct(
+        public string $domainName,
+        public int $expirationDate,
     ) {
-        $this->domainName     = $domainName;
-        $this->expirationDate = $expirationDate;
     }
 
     /**

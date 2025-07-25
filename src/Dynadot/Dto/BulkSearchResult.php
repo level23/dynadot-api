@@ -4,15 +4,11 @@ namespace Level23\Dynadot\Dto;
 
 final class BulkSearchResult implements DtoInterface
 {
-    /** @var array<BulkSearchDomainResult> */
-    public array $domainResults;
-
     /**
      * @param array<BulkSearchDomainResult> $domainResults
      */
-    private function __construct(array $domainResults)
+    private function __construct(public array $domainResults)
     {
-        $this->domainResults = $domainResults;
     }
 
     /**

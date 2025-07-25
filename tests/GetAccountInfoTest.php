@@ -104,6 +104,7 @@ class GetAccountInfoTest extends TestCase
         $this->assertEquals('testuser', $result->accountInfo->username);
         $this->assertEquals('testforum', $result->accountInfo->forumName);
         $this->assertEquals('https://example.com/avatar.png', $result->accountInfo->avatarUrl);
+        $this->assertNotNull($result->accountInfo->accountContact);
         $this->assertEquals('TestOrg', $result->accountInfo->accountContact->organization);
         $this->assertEquals('Test User', $result->accountInfo->accountContact->name);
         $this->assertEquals('test@example.com', $result->accountInfo->accountContact->email);
@@ -121,6 +122,7 @@ class GetAccountInfoTest extends TestCase
         $this->assertEquals(2, $result->accountInfo->defaultAdminContactId);
         $this->assertEquals(3, $result->accountInfo->defaultTechnicalContactId);
         $this->assertEquals(4, $result->accountInfo->defaultBillingContactId);
+        $this->assertNotNull($result->accountInfo->defaultNameServerSettings);
         $this->assertEquals('custom', $result->accountInfo->defaultNameServerSettings->type);
         $this->assertEquals('no', $result->accountInfo->defaultNameServerSettings->withAds);
         $this->assertEquals('3600', $result->accountInfo->defaultNameServerSettings->ttl);

@@ -4,15 +4,10 @@ namespace Level23\Dynadot\Dto;
 
 final class RenewOptionResult implements DtoInterface
 {
-    public ?int $code;
-    public ?string $message;
-
-    private function __construct(
-        ?int $code,
-        ?string $message,
+    public function __construct(
+        public ?int $code,
+        public ?string $message,
     ) {
-        $this->code    = $code;
-        $this->message = $message;
     }
 
     /**

@@ -4,15 +4,10 @@ namespace Level23\Dynadot\Dto;
 
 final class BulkSearchDomainResult implements DtoInterface
 {
-    public string $domainName;
-    public string $available;
-
     private function __construct(
-        string $domainName,
-        string $available,
+        public string $domainName,
+        public string $available,
     ) {
-        $this->domainName = $domainName;
-        $this->available  = $available;
     }
 
     /**

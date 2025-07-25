@@ -4,25 +4,15 @@ namespace Level23\Dynadot\Dto;
 
 final class SearchResult implements DtoInterface
 {
-    public string $domainName;
-    public string $available;
-    public string $premium;
-    /** @var array<PriceList> */
-    public array $priceList;
-
     /**
      * @param array<PriceList> $priceList
      */
-    private function __construct(
-        string $domainName,
-        string $available,
-        string $premium,
-        array $priceList,
+    public function __construct(
+        public string $domainName,
+        public string $available,
+        public string $premium,
+        public array $priceList,
     ) {
-        $this->domainName = $domainName;
-        $this->available  = $available;
-        $this->premium    = $premium;
-        $this->priceList  = $priceList;
     }
 
     /**
@@ -57,7 +47,7 @@ final class SearchResult implements DtoInterface
             'domain_name' => $this->domainName,
             'available'   => $this->available,
             'premium'     => $this->premium,
-            'price_list'  => array_map(fn ($price) => $price->jsonSerialize(), $this->priceList),
+            'price_list'  => array_map(fn (PriceList $price) => $price->jsonSerialize(), $this->priceList),
         ];
     }
 }

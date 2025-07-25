@@ -4,15 +4,14 @@ namespace Level23\Dynadot\Dto;
 
 final class PriceList implements DtoInterface
 {
-    public string $currency;
-    public string $unit;
-    public string $transfer;
-    public string $restore;
-    public string $registration;
-    public string $renewal;
-
-    private function __construct()
-    {
+    private function __construct(
+        public string $currency,
+        public string $unit,
+        public string $transfer,
+        public string $restore,
+        public string $registration,
+        public string $renewal,
+    ) {
     }
 
     /**
@@ -23,15 +22,14 @@ final class PriceList implements DtoInterface
      */
     public static function fromArray(array $data): self
     {
-        $dto               = new self();
-        $dto->currency     = $data['currency'] ?? '';
-        $dto->unit         = $data['unit'] ?? '';
-        $dto->registration = $data['registration'] ?? '';
-        $dto->renewal      = $data['renewal'] ?? '';
-        $dto->transfer     = $data['transfer'] ?? '';
-        $dto->restore      = $data['restore'] ?? '';
-
-        return $dto;
+        return new self(
+            $data['currency'] ?? '',
+            $data['unit'] ?? '',
+            $data['transfer'] ?? '',
+            $data['restore'] ?? '',
+            $data['registration'] ?? '',
+            $data['renewal'] ?? ''
+        );
     }
 
     /**

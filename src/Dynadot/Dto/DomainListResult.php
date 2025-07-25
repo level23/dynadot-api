@@ -4,15 +4,11 @@ namespace Level23\Dynadot\Dto;
 
 final class DomainListResult implements DtoInterface
 {
-    /** @var array<DomainInfo> */
-    public array $domains;
-
     /**
      * @param array<DomainInfo> $domains
      */
-    private function __construct(array $domains)
+    public function __construct(public array $domains)
     {
-        $this->domains = $domains;
     }
 
     /**

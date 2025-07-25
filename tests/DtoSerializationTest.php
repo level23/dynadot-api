@@ -2,14 +2,20 @@
 
 namespace Level23\Dynadot\Tests;
 
+use Level23\Dynadot\Dto\AccountContact;
+use Level23\Dynadot\Dto\AccountInfo;
+use Level23\Dynadot\Dto\AccountInfoResult;
+use Level23\Dynadot\Dto\BalanceListItem;
 use Level23\Dynadot\Dto\BulkSearchDomainResult;
 use Level23\Dynadot\Dto\BulkSearchResult;
 use Level23\Dynadot\Dto\Contact;
 use Level23\Dynadot\Dto\ContactListResult;
+use Level23\Dynadot\Dto\DefaultNameServerSettings;
 use Level23\Dynadot\Dto\DomainInfo;
 use Level23\Dynadot\Dto\DomainListResult;
 use Level23\Dynadot\Dto\DomainRegistrationRequest;
 use Level23\Dynadot\Dto\DomainRegistrationResult;
+use Level23\Dynadot\Dto\EmailForwarding;
 use Level23\Dynadot\Dto\NameserverUpdateResult;
 use Level23\Dynadot\Dto\PriceList;
 use Level23\Dynadot\Dto\RenewOptionResult;
@@ -546,5 +552,91 @@ class DtoSerializationTest extends TestCase
 
         $this->assertEquals('USD', $serializedData['currency']);
         $this->assertFalse($serializedData['register_premium']);
+    }
+
+    public function testAccountInfoJsonSerialize(): void
+    {
+        $accountContact = new AccountContact(
+            'Test Org',
+            'John Doe',
+            'john@example.com',
+            '1234567890',
+            '1',
+            '987654321',
+            '1',
+            '123 Main St',
+            'Suite 100',
+            'New York',
+            'NY',
+            '10001',
+            'US'
+        );
+
+        $emailForwarding           = new EmailForwarding('catchall');
+        $defaultNameServerSettings = new DefaultNameServerSettings(
+            'custom',
+            'no',
+            'forward.com',
+            '301',
+            'My Site',
+            '3600',
+            $emailForwarding
+        );
+
+        $balanceList = [
+            new BalanceListItem('USD', '100.00'),
+            new BalanceListItem('EUR', '50.00'),
+        ];
+
+        $accountInfo = new AccountInfo(
+            'testuser',
+            'forumuser',
+            'https://avatar.example.com',
+            $accountContact,
+            1609459200,
+            'enabled',
+            'UTC',
+            111,
+            222,
+            333,
+            444,
+            $defaultNameServerSettings,
+            '1234.56',
+            'gold',
+            '200.00',
+            $balanceList
+        );
+
+        $result     = new AccountInfoResult($accountInfo);
+        $serialized = $result->jsonSerialize();
+
+        $this->assertArrayHasKey('account_info', $serialized);
+        $info = $serialized['account_info'];
+        $this->assertEquals('testuser', $info['username']);
+        $this->assertEquals('forumuser', $info['forum_name']);
+        $this->assertEquals('https://avatar.example.com', $info['avatar_url']);
+        $this->assertEquals(1609459200, $info['customer_since']);
+        $this->assertEquals('enabled', $info['account_lock']);
+        $this->assertEquals('UTC', $info['custom_time_zone']);
+        $this->assertEquals(111, $info['default_registrant_contact_id']);
+        $this->assertEquals(222, $info['default_admin_contact_id']);
+        $this->assertEquals(333, $info['default_technical_contact_id']);
+        $this->assertEquals(444, $info['default_billing_contact_id']);
+        $this->assertEquals('1234.56', $info['total_spending']);
+        $this->assertEquals('gold', $info['price_level']);
+        $this->assertEquals('200.00', $info['account_balance']);
+        $this->assertIsArray($info['account_contact']);
+        $this->assertEquals('Test Org', $info['account_contact']['organization']);
+        $this->assertEquals('John Doe', $info['account_contact']['name']);
+        $this->assertEquals('john@example.com', $info['account_contact']['email']);
+        $this->assertIsArray($info['default_name_server_settings']);
+        $this->assertEquals('custom', $info['default_name_server_settings']['type']);
+        $this->assertEquals('catchall', $info['default_name_server_settings']['email_forwarding']['type']);
+        $this->assertIsArray($info['balance_list']);
+        $this->assertCount(2, $info['balance_list']);
+        $this->assertEquals('USD', $info['balance_list'][0]['currency']);
+        $this->assertEquals('100.00', $info['balance_list'][0]['amount']);
+        $this->assertEquals('EUR', $info['balance_list'][1]['currency']);
+        $this->assertEquals('50.00', $info['balance_list'][1]['amount']);
     }
 }

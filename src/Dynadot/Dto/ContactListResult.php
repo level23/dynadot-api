@@ -4,15 +4,11 @@ namespace Level23\Dynadot\Dto;
 
 final class ContactListResult implements DtoInterface
 {
-    /** @var array<Contact> */
-    public array $contacts;
-
     /**
      * @param array<Contact> $contacts
      */
-    private function __construct(array $contacts)
+    private function __construct(public array $contacts)
     {
-        $this->contacts = $contacts;
     }
 
     /**
