@@ -86,7 +86,7 @@ class Client
             'PUT',
             "domains/{$domainName}/nameservers",
             [
-                'nameservers_list' => $nameservers,
+                'nameserver_list' => $nameservers,
             ],
             NameserverUpdateResult::class
         );
