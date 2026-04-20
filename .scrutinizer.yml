@@ -1,0 +1,16 @@
+build:
+  environment:
+    php:
+      version: "8.2"
+
+  dependencies:
+    before:
+      - composer install --no-interaction --prefer-dist
+
+  tests:
+    override:
+      -
+        command: "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover=clover.xml"
+        coverage:
+          file: "clover.xml"
+          format: "clover"

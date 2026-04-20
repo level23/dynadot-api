@@ -6,7 +6,6 @@ build/pdepend/
 build/phpdox/
 cache.properties
 docs
-composer.lock
 
 .buildpath
 .DS_Store
@@ -25,5 +24,8 @@ composer.lock
 /examples/.secret
 /.phpunit.result.cache
 /.phpunit.cache/test-results
+/clover.xml
+/.phpunit.cache/
 
 .php-cs-fixer.cache
+composer.lock
